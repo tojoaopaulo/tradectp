@@ -1,0 +1,1 @@
+response.end("Hello Azure!");
