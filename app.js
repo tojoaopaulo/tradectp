@@ -74,4 +74,31 @@ function imprime(lbl, valor)
   valor = Math.round(valor * 100) / 100;
 
   console.log(lbl +  desc + valor * 100 + ' %' );
+} if (valor > 0)
+    desc = " Perdeu trouxa ";
+    
+  
+  valor = Math.round(valor * 100) / 100;
+
+  console.log(lbl +  desc + valor * 100 + ' %' );
+}
+
+function GravaCota()
+{
+  const fs = require('fs');
+
+  let teste = "vai mano";
+
+  fs.writeFile('cotas.txt', teste, (err) => {
+    if(err) throw err;
+
+    console.log('salvado viado');
+  })
+
+}
+
+function Cota(nome, valor )
+{
+  this.Valor = valor;
+  this.Nome = nome;
 }
