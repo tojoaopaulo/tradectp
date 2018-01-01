@@ -38,6 +38,8 @@ https.get(opts, (resp) => {
       return item.Label === "SKY/BTC";
     } );
 
+    var testedoido = 0;
+
     var luxComprado = 0.00111200;
     var dbetComprado = 0.00003801;
     var sendComprado = 0.00002400;
@@ -48,16 +50,16 @@ https.get(opts, (resp) => {
     var sendDif = (sendComprado - SEND[0].LastPrice)/sendComprado;
     var skyDif = (skyComprado - SKY[0].LastPrice)/skyComprado;
 
-
-
     imprime(LUX[0].Label, luxDif);
     imprime(DBET[0].Label, dbetDif);
     imprime(SEND[0].Label, sendDif);
     imprime(SKY[0].Label, skyDif);
 
-    //console.log(LUX[0].LastPrice + DBET[0].LastPrice + SEND[0].LastPrice + SKY[0].LastPrice);
+    var total = luxDif + dbetDif + sendDif + skyDif;
+    total = total / 4;
+    
+    LeQlqrMerda();
 
-    //console.log(data);   
   });
  1
 }).on("error", (err) => {
@@ -74,31 +76,68 @@ function imprime(lbl, valor)
   valor = Math.round(valor * 100) / 100;
 
   console.log(lbl +  desc + valor * 100 + ' %' );
-} if (valor > 0)
-    desc = " Perdeu trouxa ";
-    
-  
-  valor = Math.round(valor * 100) / 100;
-
-  console.log(lbl +  desc + valor * 100 + ' %' );
 }
 
-function GravaCota()
+function GravaCota(cotas)
 {
   const fs = require('fs');
 
-  let teste = "vai mano";
-
-  fs.writeFile('cotas.txt', teste, (err) => {
+  fs.writeFile('cotas.txt', JSON.stringify(cotas), (err) => {
     if(err) throw err;
 
     console.log('salvado viado');
   })
+}
 
+function LeCotas()
+{
+  const fs = require('fs');
+
+  fs.readFile('cotas.txt', function(err,data){
+    if (err) throw err;
+
+    var cota = JSON.parse(data);
+
+    console.log(cota.Nome);
+  });
+  
 }
 
 function Cota(nome, valor )
 {
-  this.Valor = valor;
   this.Nome = nome;
+  this.Valor = valor;
+  
+}
+
+function LeQlqrMerda()
+{
+  var inquirer = require('inquirer');
+
+  var lbl = '';
+  var valor = 0;
+
+  var questions = [
+    {
+      type: 'input',
+      name: 'nome',
+      message: "moeda"
+    },
+    {
+      type: 'input',
+      name: 'valor',
+      message: "valor"
+    }
+  ];
+
+  inquirer.prompt(questions).then(answers => {
+    var cotas = [];
+    cotas.push(new Cota(answers.nome, answers.valor));
+    
+    GravaCota(cotas);
+  
+  });
+
+
+  
 }
