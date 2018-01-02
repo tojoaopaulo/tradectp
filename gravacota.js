@@ -2,13 +2,9 @@ var inquirer = require('inquirer');
 
 var geracota = require('./cota.js')
 
-/*
-try {
-    LeCotas(cadastrarCotas);    
-} catch (error) {
-    console.log('deu merda');
-}
-*/
+
+//LeCotas(cadastrarCotas);    
+
 
 exports.LeCotas = (acaoSeguinte) => LeCotas(acaoSeguinte);
 
@@ -19,7 +15,7 @@ function LeCotas(acaoSeguinte)
   fs.readFile('cotas.txt', function(err,data){
     if (err) throw err;
 
-    var cotas = JSON.parse(data);
+    var cotas = data.length != 0 ? JSON.parse(data) : [];
 
     acaoSeguinte(cotas);
     console.log('chamou acao seguinte');

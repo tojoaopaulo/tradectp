@@ -15,7 +15,8 @@ opts.headers = {
 }
 
 try {
-  ControlaFluxo();
+  //ControlaFluxo();
+  cadastroCota.LeCotas(processaCotas);
 } catch (error) {
   console.log('deu merda' + error.message);
 }
@@ -33,7 +34,7 @@ function ControlaFluxo()
       switch(answers.acao)
       {
         case 'q':
-          processaCotas();
+          cadastroCota.LeCotas(processaCotas);
           break;
         case 'c':
           cadastroCota.LeCotas(cadastroCota.cadastrarCotas);
@@ -48,7 +49,7 @@ function ControlaFluxo()
     });
 }
 
-function processaCotas()
+function processaCotas(cotas)
 {
   https.get(opts, (resp) => {
     let data = '';
@@ -62,6 +63,17 @@ function processaCotas()
     resp.on('end', () => {
       var cotacoes = JSON.parse(data).Data;
   
+      cotas.forEach(c => {
+        var itemCota = cotacoes.filter(function (item) {
+          return item.Label == c.Nome+"/BTC";
+        })[0];
+
+        c.UltimoPreco = itemCota.LastPrice; 
+
+        console.log("achei esse cara " + JSON.stringify(cotas));
+
+      });
+/*
       var LUX = cotacoes.filter(function (item) {
         return item.Label === "LUX/BTC";
       } );
@@ -84,7 +96,8 @@ function processaCotas()
       var dbetComprado = 0.00003801;
       var sendComprado = 0.00002400;
       var skyComprado = 0.00359239;
-  
+    */
+
       var luxDif = (luxComprado - LUX[0].LastPrice)/luxComprado;
       var dbetDif = (dbetComprado - DBET[0].LastPrice)/dbetComprado;
       var sendDif = (sendComprado - SEND[0].LastPrice)/sendComprado;

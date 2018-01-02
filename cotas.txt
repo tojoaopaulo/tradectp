@@ -1,1 +1,1 @@
-[{"Nome":"luxo","Valor":"10"},{"Nome":"10","Valor":"20"},{"Nome":"luxo","Valor":"10"},{"Nome":"alfa","Valor":"10"},{"Nome":"luxo","Valor":"4545"},{"Nome":"pokebolas","Valor":"10"}]
+[{"Nome":"DBET","Valor":"10"}]
