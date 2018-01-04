@@ -2,13 +2,14 @@
 
 class Cota
 {
-  constructor (nome, valor )
+  constructor (nome, valor, quantidade)
   {
       this.Nome = nome;
       this.Valor = valor;
+      this.Quantidade = quantidade;
       this.MaiorPreco;
       // privada
-      var ultimoPreco;    
+      var ultimoPreco;
   }
 
   get UltimoPreco(){
@@ -22,13 +23,21 @@ class Cota
     this.MaiorPreco = value;
   }
 
-  variacaoDePreco() {
-    return this.Valor - this.UltimoPreco;
+  VariacaoDePreco() {
+    return this.UltimoPreco - this.Valor;
   }
 
-  variacaoPercentualPreco()
+  VariacaoPercentualPreco()
   {
-    return this.variacaoDePreco()/this.Valor;
+    return this.VariacaoDePreco()/this.Valor;
+  }
+
+  QuantidadeBTC()
+  {
+    if(this.Nome === "BTC")
+      return this.Quantidade;
+
+    return this.UltimoPreco * this.Quantidade;
   }
 }
 

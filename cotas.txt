@@ -1,1 +1,1 @@
-[{"Nome":"LUX","Valor":0.00111200},{"Nome":"SKY","Valor":"0.00359239"},{"Nome":"XSPEC","Valor":"0.00035700"}, {"Nome":"XBY","Valor":"0.00005459"}]
+[{"Nome":"LUX","Valor":"0.001112","Quantidade":"3.65"},{"Nome":"SKY","Valor":"0.00359239","Quantidade":"1.15"},{"Nome":"XSPEC","Valor":"0.00035700","Quantidade":"12"},{"Nome":"XBY","Valor":"0.00005459","Quantidade":"83"},{"Nome":"BTC","Valor":"14000","Quantidade":"0.00028695"}]

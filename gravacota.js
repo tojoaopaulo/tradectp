@@ -16,14 +16,12 @@ function LeCotas(acaoSeguinte)
     var cotas = data.length != 0 ? JSON.parse(data) : [];
 
     acaoSeguinte(cotas);
-    console.log('chamou acao seguinte');
   }); 
 }
 
 exports.cadastrarCotas = cadastrarCotas;
 
 function cadastrarCotas(cotas){
-  console.log('acao seguinte ' + JSON.stringify(cotas));
   LeQlqrMerda(cotas);
 }
 
@@ -39,24 +37,25 @@ function LeQlqrMerda(cotas)
       type: 'input',
       name: 'valor',
       message: "valor"
+    },
+    {
+      type: 'input',
+      name: 'quantidade',
+      message: "quantidade"
     }
   ];
-  console.log('le qlqr merda ' + JSON.stringify(cotas));
+  console.log(JSON.stringify(cotas));
 
   inquirer.prompt(questions).then(answers => 
   {   
-    console.log('inq 1 ' + JSON.stringify(cotas));
-
     try {
-      cotas.push(new Cota(answers.nome, answers.valor));  
+      cotas.push(new Cota(answers.nome, answers.valor, answers.quantidade));  
     } 
     catch (error) 
     {
       console.log('DEU BODE NA CRIAÇÃO DA COTA ' + JSON.stringify(error));  
     }
     GravaCota(cotas);  
-
-    console.log('inq 2 ' + JSON.stringify(cotas));
   });
 }
 

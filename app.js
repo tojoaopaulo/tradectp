@@ -1,12 +1,12 @@
-var Cota = require('./cota.js')
-var cadastroCota = require('./gravacota.js')
-
-const https = require('https');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; 
 
-var url = 'https://www.cryptopia.co.nz/api/GetMarkets/BTC';
+var Cota = require('./cota.js')
+var cadastroCota = require('./gravacota.js')
+const https = require('https');
 var inquirer = require('inquirer');
-var opts = require('url').parse(url);
+var opts = require('url').parse('https://www.cryptopia.co.nz/api/GetMarkets/BTC');
+
+var precoBTC = 0;
 
 opts.headers = { 
   'User-Agent' : 'javascript',
@@ -20,26 +20,29 @@ var debug = false;
 if(debug)
 {
   //cadastroCota.LeCotas(processaCotas);
-  var cotas = [];
-  var js = '[{"Nome":"LUX","Valor":0.00111200}]';
-  var arrcota = JSON.parse('[{"Nome":"LUX","Valor":0.00111200}]');
+  //var cotas = [];
+  //var js = '[{"Nome":"LUX","Valor":0.00111200}]';
+  //var arrcota = JSON.parse('[{"Nome":"LUX","Valor":0.00111200}]');
 
-  arrcota.forEach(element => {
-    myC = Object.assign( new Cota(), element);
-    myC.UltimoPreco = 10;
-    cotas.push(myC);
+  //arrcota.forEach(element => {
+  //  myC = Object.assign( new Cota(), element);
+  //  myC.UltimoPreco = 10;
+  //  cotas.push(myC);
 
     //myC.variacaoDePreco();
-    var a = myC.variacaoPercentualPreco();
+  //  var a = myC.variacaoPercentualPreco();
 
-    imprime(myC);
-  });
+  //  imprime(myC);
+  //});
   
-  processaCotas(cotas);
+  //processaCotas(cotas);
+
+  ConverterCotaBTCXUSD();
 }
 else
   ControlaFluxo();
   
+
 function ControlaFluxo()
 {
   var questions = [
@@ -81,35 +84,74 @@ function processaCotas(cotas)
     // The whole response has been received. Print out the result.
     resp.on('end', () => {
       var cotacoes = JSON.parse(data).Data;
-  
+
       cotas.forEach(c => {
 
         c = Object.assign( new Cota(), c);
 
-        var itemCota = cotacoes.filter(function (item) {
-          return item.Label == c.Nome+"/BTC";
-        })[0];
-
-        c.UltimoPreco = itemCota.LastPrice; 
-
+        if(c.Nome == "BTC")
+        {
+          c.UltimoPreco = c.Valor;
+        }
+        else
+        {         
+          var itemCota = cotacoes.filter(function (item) {
+            return item.Label == c.Nome+"/BTC";
+          })[0];
+  
+          c.UltimoPreco = itemCota.LastPrice; 
+  
+          // salvar cotas
+        }
+        
         imprime(c);
       });
-  
     });
-   1
   }).on("error", (err) => {
     console.log("Error: " + err.message);
   });
+}
+
+function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
+  if(precoBTC == 0)
+  {
+    var url = 'https://www.cryptopia.co.nz/api/GetMarkets/USDT';
   
+    opts = require('url').parse(url);
+  
+    https.get(opts, (resp) => {
+      let data = '';
+     
+      // A chunk of data has been recieved.
+      resp.on('data', (chunk) => {
+        data += chunk;
+      });
+     
+      // The whole response has been received. Print out the result.
+      resp.on('end', () => {
+        var cotacoes = JSON.parse(data).Data;
+    
+          var BTCUSDT = cotacoes.filter(function (item) {
+            return item.Label == "BTC/USDT";
+          })[0];
+  
+          precoBTC = BTCUSDT.LastPrice;
+
+          console.log(nome + ": " + (precoBTC * qtdBTC));
+          //return precoBTC * qtdBTC; asnyc await
+          
+        });
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+    });
+  }
 }
 
 function imprime(cota)
 {
-  var desc = "Ganhando ";
-  if (cota.variacaoDePreco()> 0)
-    desc = "Perdeu trouxa ";
+  var valor = Math.round(cota.VariacaoPercentualPreco() * 100) / 100;
 
-  var valor = Math.round(cota.variacaoPercentualPreco() * 100) / 100;
+  console.log(cota.Nome + ' ' + valor * 100 + '%              ' + JSON.stringify(cota));
 
-  console.log(cota.Nome + " - " + desc + valor * 100 + ' %' + '              ' + JSON.stringify(cota));
+  ConverterCotaBTCXUSD(cota.Nome,cota.QuantidadeBTC());
 }
