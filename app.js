@@ -1,4 +1,4 @@
-var geracota = require('./cota.js')
+var Cota = require('./cota.js')
 var cadastroCota = require('./gravacota.js')
 
 const https = require('https');
@@ -18,11 +18,28 @@ opts.headers = {
 var debug = false;
 
 if(debug)
-  cadastroCota.LeCotas(processaCotas);
+{
+  //cadastroCota.LeCotas(processaCotas);
+  var cotas = [];
+  var js = '[{"Nome":"LUX","Valor":0.00111200}]';
+  var arrcota = JSON.parse('[{"Nome":"LUX","Valor":0.00111200}]');
+
+  arrcota.forEach(element => {
+    myC = Object.assign( new Cota(), element);
+    myC.UltimoPreco = 10;
+    cotas.push(myC);
+
+    //myC.variacaoDePreco();
+    var a = myC.variacaoPercentualPreco();
+
+    imprime(myC);
+  });
+  
+  processaCotas(cotas);
+}
 else
   ControlaFluxo();
   
-
 function ControlaFluxo()
 {
   var questions = [
@@ -66,60 +83,17 @@ function processaCotas(cotas)
       var cotacoes = JSON.parse(data).Data;
   
       cotas.forEach(c => {
+
+        c = Object.assign( new Cota(), c);
+
         var itemCota = cotacoes.filter(function (item) {
           return item.Label == c.Nome+"/BTC";
         })[0];
 
         c.UltimoPreco = itemCota.LastPrice; 
 
-        console.log("achei esse cara " + JSON.stringify(cotas));
-
+        imprime(c);
       });
-      
-      /*
-      var LUX = cotacoes.filter(function (item) {
-        return item.Label === "LUX/BTC";
-      } );
-  
-      var DBET = cotacoes.filter(function (item) {
-        return item.Label === "DBET/BTC";
-      } );
-  
-      var SEND = cotacoes.filter(function (item) {
-        return item.Label === "SEND/BTC";
-      } );
-  
-      var SKY = cotacoes.filter(function (item) {
-        return item.Label === "SKY/BTC";
-      } );
-
-      var XBY = cotacoes.filter(function (item) {
-        return item.Label === "XBY/BTC";
-      } );
-  
-      var testedoido = 0;
-  
-      //var luxComprado = 0.00111200;
-      //var dbetComprado = 0.00003801;
-      //var sendComprado = 0.00002400;
-      //var skyComprado = 0.00359239;
-      //var XBYComprado = 0.00005459;
-      */
-
-      var luxDif = (luxComprado - LUX[0].LastPrice)/luxComprado;
-      var dbetDif = (dbetComprado - DBET[0].LastPrice)/dbetComprado;
-      var sendDif = (sendComprado - SEND[0].LastPrice)/sendComprado;
-      var skyDif = (skyComprado - SKY[0].LastPrice)/skyComprado;
-      var XBYDif = (XBYComprado - XBY[0].LastPrice)/XBYComprado;
-  
-      imprime(LUX[0].Label, luxDif);
-      imprime(DBET[0].Label, dbetDif);
-      imprime(SEND[0].Label, sendDif);
-      imprime(SKY[0].Label, skyDif);
-      imprime(XBY[0].Label, XBYDif);
-  
-      var total = luxDif + dbetDif + sendDif + skyDif;
-      total = total / 4;
   
     });
    1
@@ -129,14 +103,13 @@ function processaCotas(cotas)
   
 }
 
-function imprime(lbl, valor)
+function imprime(cota)
 {
-  var desc = " Ganhando ";
-  if (valor > 0)
-    desc = " Perdeu trouxa ";
-    
-  
-  valor = Math.round(valor * 100) / 100;
+  var desc = "Ganhando ";
+  if (cota.variacaoDePreco()> 0)
+    desc = "Perdeu trouxa ";
 
-  console.log(lbl +  desc + valor * 100 + ' %' );
+  var valor = (cota.variacaoPercentualPreco() * 100) / 100;
+
+  console.log(cota.Nome + " - " + desc + valor * 100 + ' %' + ' ' + JSON.stringify(cota));
 }

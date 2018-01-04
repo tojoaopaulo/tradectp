@@ -1,1 +1,1 @@
-[{"Nome":"cotita","Valor":10},{"Nome":"teste123","Valor":"123"},{"Nome":"novacota","Valor":"10"}]
+[{"Nome":"LUX","Valor":0.00111200},{"Nome":"SKY","Valor":"0.00359239"},{"Nome":"XSPEC","Valor":"0.00035700"}, {"Nome":"XBY","Valor":"0.00005459"}]
