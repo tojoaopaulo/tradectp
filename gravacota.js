@@ -1,10 +1,8 @@
 var inquirer = require('inquirer');
 
-var geracota = require('./cota.js')
-
+var Cota = require('./cota.js')
 
 //LeCotas(cadastrarCotas);    
-
 
 exports.LeCotas = (acaoSeguinte) => LeCotas(acaoSeguinte);
 
@@ -12,7 +10,7 @@ function LeCotas(acaoSeguinte)
 {
   const fs = require('fs');
 
-  fs.readFile('cotas.txt', function(err,data){
+  fs.readFile('./cotas.txt', function(err,data){
     if (err) throw err;
 
     var cotas = data.length != 0 ? JSON.parse(data) : [];
@@ -45,12 +43,17 @@ function LeQlqrMerda(cotas)
   ];
   console.log('le qlqr merda ' + JSON.stringify(cotas));
 
-  inquirer.prompt(questions).then(answers => {
-    //var cotas = [];11
-
+  inquirer.prompt(questions).then(answers => 
+  {   
     console.log('inq 1 ' + JSON.stringify(cotas));
 
-    cotas.push(geracota.NovaCota(answers.nome, answers.valor));
+    try {
+      cotas.push(new Cota(answers.nome, answers.valor));  
+    } 
+    catch (error) 
+    {
+      console.log('DEU BODE NA CRIAÇÃO DA COTA ' + JSON.stringify(error));  
+    }
     GravaCota(cotas);  
 
     console.log('inq 2 ' + JSON.stringify(cotas));
@@ -65,5 +68,5 @@ function GravaCota(cotas)
     if(err) throw err;
 
     console.log('salvado viado');
-  })
+  });
 }

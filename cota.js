@@ -1,9 +1,26 @@
-function Cota(nome, valor )
+"use strict"
+
+class Cota
 {
-  this.Nome = nome;
-  this.Valor = valor;
-  this.UltimoPreco;
-  this.MaiorPreco;
+  constructor (nome, valor )
+  {
+      this.Nome = nome;
+      this.Valor = valor;
+      this.MaiorPreco;
+      // privada
+      var ultimoPreco;    
+  }
+
+  get UltimoPreco(){
+    return this.ultimoPreco;
+  }
+
+  set UltimoPreco(value){
+    this.ultimoPreco = value;
+
+    if(value > this.MaiorPreco)
+    this.MaiorPreco = value;
+  }
 }
 
-exports.NovaCota = (nome, valor) => new Cota(nome, valor); 
+module.exports = Cota;

@@ -14,12 +14,14 @@ opts.headers = {
   'Content-Type': 'application/json',
 }
 
-try {
-  //ControlaFluxo();
+//var debug = true;
+var debug = false;
+
+if(debug)
   cadastroCota.LeCotas(processaCotas);
-} catch (error) {
-  console.log('deu merda' + error.message);
-}
+else
+  ControlaFluxo();
+  
 
 function ControlaFluxo()
 {
@@ -37,7 +39,7 @@ function ControlaFluxo()
           cadastroCota.LeCotas(processaCotas);
           break;
         case 'c':
-          cadastroCota.LeCotas(cadastroCota.cadastrarCotas);
+          cadastroCota.LeCotas(cadastroCota.cadastrarCotas); //.then(ControlaFluxo());
           break;
         case 'r':
           processaCotas();
@@ -73,7 +75,8 @@ function processaCotas(cotas)
         console.log("achei esse cara " + JSON.stringify(cotas));
 
       });
-/*
+      
+      /*
       var LUX = cotacoes.filter(function (item) {
         return item.Label === "LUX/BTC";
       } );
@@ -89,24 +92,31 @@ function processaCotas(cotas)
       var SKY = cotacoes.filter(function (item) {
         return item.Label === "SKY/BTC";
       } );
+
+      var XBY = cotacoes.filter(function (item) {
+        return item.Label === "XBY/BTC";
+      } );
   
       var testedoido = 0;
   
-      var luxComprado = 0.00111200;
-      var dbetComprado = 0.00003801;
-      var sendComprado = 0.00002400;
-      var skyComprado = 0.00359239;
-    */
+      //var luxComprado = 0.00111200;
+      //var dbetComprado = 0.00003801;
+      //var sendComprado = 0.00002400;
+      //var skyComprado = 0.00359239;
+      //var XBYComprado = 0.00005459;
+      */
 
       var luxDif = (luxComprado - LUX[0].LastPrice)/luxComprado;
       var dbetDif = (dbetComprado - DBET[0].LastPrice)/dbetComprado;
       var sendDif = (sendComprado - SEND[0].LastPrice)/sendComprado;
       var skyDif = (skyComprado - SKY[0].LastPrice)/skyComprado;
+      var XBYDif = (XBYComprado - XBY[0].LastPrice)/XBYComprado;
   
       imprime(LUX[0].Label, luxDif);
       imprime(DBET[0].Label, dbetDif);
       imprime(SEND[0].Label, sendDif);
       imprime(SKY[0].Label, skyDif);
+      imprime(XBY[0].Label, XBYDif);
   
       var total = luxDif + dbetDif + sendDif + skyDif;
       total = total / 4;
