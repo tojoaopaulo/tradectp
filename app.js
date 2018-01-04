@@ -109,7 +109,7 @@ function imprime(cota)
   if (cota.variacaoDePreco()> 0)
     desc = "Perdeu trouxa ";
 
-  var valor = (cota.variacaoPercentualPreco() * 100) / 100;
+  var valor = Math.round(cota.variacaoPercentualPreco() * 100) / 100;
 
-  console.log(cota.Nome + " - " + desc + valor * 100 + ' %' + ' ' + JSON.stringify(cota));
+  console.log(cota.Nome + " - " + desc + valor * 100 + ' %' + '              ' + JSON.stringify(cota));
 }
