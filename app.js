@@ -40,11 +40,18 @@ if(debug)
   ConverterCotaBTCXUSD();
 }
 else
-  ControlaFluxo();
-  
+{
+  if(process.argv[2] === 'q')
+    cadastroCota.LeCotas(processaCotas);
+  else
+    ControlaFluxo();
+
+} 
 
 function ControlaFluxo()
 {
+
+
   var questions = [
     {
       type: 'input',
