@@ -41,17 +41,30 @@ if(debug)
 }
 else
 {
-  if(process.argv[2] === 'q')
-    cadastroCota.LeCotas(processaCotas);
+  if(process.argv[2] !== undefined)
+    ProcessaAcao(process.argv[2]);
   else
     ControlaFluxo();
-
 } 
+
+function ProcessaAcao(acao)
+{
+  switch(acao)
+  {
+    case 'q':
+      cadastroCota.LeCotas(processaCotas);
+      break;
+    case 'c':
+      cadastroCota.LeCotas(cadastroCota.cadastrarCotas); //.then(ControlaFluxo());
+      break;
+    case 'r':
+      processaCotas();
+      break;
+  }
+}
 
 function ControlaFluxo()
 {
-
-
   var questions = [
     {
       type: 'input',
@@ -60,21 +73,7 @@ function ControlaFluxo()
     }];
 
     inquirer.prompt(questions).then(answers => {
-      switch(answers.acao)
-      {
-        case 'q':
-          cadastroCota.LeCotas(processaCotas);
-          break;
-        case 'c':
-          cadastroCota.LeCotas(cadastroCota.cadastrarCotas); //.then(ControlaFluxo());
-          break;
-        case 'r':
-          processaCotas();
-          break;
-      }
-
-      //var cotas = [];
-      //cotas.push(new Cota(answers.nome, answers.valor));
+      ProcessaAcao(answers.acao);
     });
 }
 
