@@ -55,10 +55,10 @@ function ProcessaAcao(acao)
       cadastroCota.LeCotas(processaCotas);
       break;
     case 'c':
-      cadastroCota.LeCotas(cadastroCota.cadastrarCotas); //.then(ControlaFluxo());
+      cadastroCota.LeCotas(cadastroCota.cadastrarCotas);
       break;
     case 'r':
-      processaCotas();
+      cadastroCota.LeCotas(cadastroCota.removerCotas); 
       break;
   }
 }

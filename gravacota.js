@@ -2,8 +2,6 @@ var inquirer = require('inquirer');
 
 var Cota = require('./cota.js')
 
-//LeCotas(cadastrarCotas);    
-
 exports.LeCotas = (acaoSeguinte) => LeCotas(acaoSeguinte);
 
 function LeCotas(acaoSeguinte)
@@ -17,6 +15,28 @@ function LeCotas(acaoSeguinte)
 
     acaoSeguinte(cotas);
   }); 
+}
+
+exports.removerCotas = removerCotas;
+
+function removerCotas(cotas){
+  console.log(JSON.stringify(cotas));
+  var questions = [
+    {
+      type: 'input',
+      name: 'nome',
+      message: "Deleta o que? [NOME]"
+    }
+  ];
+
+  inquirer.prompt(questions).then(answers => 
+  { 
+    cotas = cotas.filter(e => e.Nome !== answers.nome);
+
+    console.log(JSON.stringify(cotas));
+    GravaCota(cotas);  
+  });
+
 }
 
 exports.cadastrarCotas = cadastrarCotas;
