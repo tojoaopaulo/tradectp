@@ -7,7 +7,7 @@ class Cota
       this.Nome = nome;
       this.Valor = valor;
       this.Quantidade = quantidade;
-      this.MaiorPreco;
+      this.MaiorPreco = 0;
       // privada
       var ultimoPreco;
   }
@@ -20,7 +20,7 @@ class Cota
     this.ultimoPreco = value;
 
     if(value > this.MaiorPreco)
-    this.MaiorPreco = value;
+      this.MaiorPreco = value;
   }
 
   VariacaoDePreco() {

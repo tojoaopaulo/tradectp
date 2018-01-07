@@ -79,6 +79,8 @@ function LeQlqrMerda(cotas)
   });
 }
 
+exports.GravaCota = GravaCota;
+
 function GravaCota(cotas)
 {
   const fs = require('fs');

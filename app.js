@@ -19,7 +19,8 @@ var debug = false;
 
 if(debug)
 {
-  //cadastroCota.LeCotas(processaCotas);
+  cadastroCota.LeCotas(processaCotas);
+  
   //var cotas = [];
   //var js = '[{"Nome":"LUX","Valor":0.00111200}]';
   //var arrcota = JSON.parse('[{"Nome":"LUX","Valor":0.00111200}]');
@@ -37,7 +38,7 @@ if(debug)
   
   //processaCotas(cotas);
 
-  ConverterCotaBTCXUSD();
+  //ConverterCotaBTCXUSD();
 }
 else
 {
@@ -91,7 +92,7 @@ function processaCotas(cotas)
     resp.on('end', () => {
       var cotacoes = JSON.parse(data).Data;
 
-      cotas.forEach(c => {
+      cotas.forEach((c, index) => {
 
         c = Object.assign( new Cota(), c);
 
@@ -111,7 +112,10 @@ function processaCotas(cotas)
         }
         
         imprime(c);
+        cotas[index] = c;
       });
+
+      cadastroCota.GravaCota(cotas);
     });
   }).on("error", (err) => {
     console.log("Error: " + err.message);
