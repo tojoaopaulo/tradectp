@@ -5,7 +5,7 @@ class Cota
   constructor (nome, valor, quantidade)
   {
       this.Nome = nome;
-      this.Valor = valor;
+      this.ValorCompra = valor;
       this.Quantidade = quantidade;
       this.MaiorPreco = 0;
       // privada
@@ -24,12 +24,12 @@ class Cota
   }
 
   VariacaoDePreco() {
-    return this.UltimoPreco - this.Valor;
+    return this.UltimoPreco - this.ValorCompra;
   }
 
   VariacaoPercentualPreco()
   {
-    return this.VariacaoDePreco()/this.Valor;
+    return this.VariacaoDePreco()/this.ValorCompra;
   }
 
   QuantidadeBTC()
@@ -38,6 +38,21 @@ class Cota
       return this.Quantidade;
 
     return this.UltimoPreco * this.Quantidade;
+  }
+
+  VariacaoMaiorPreco()
+  {
+    return Math.round(((this.UltimoPreco - this.MaiorPreco) / this.MaiorPreco) * 100);
+  }
+
+  MelhorLiquidar()
+  {
+    // Se ja existiu alguma alta, entao considera o valor de down em 5%
+    if(this.MaiorPreco > this.ValorCompra  && this.VariacaoMaiorPreco() < -5)
+      return true;
+    else
+      // Se nao houver alta e o preco atual tiver queda de > 7% vende
+      return this.VariacaoMaiorPreco() < -7;
   }
 }
 

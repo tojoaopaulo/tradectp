@@ -22,15 +22,15 @@ if(debug)
   cadastroCota.LeCotas(processaCotas);
   
   //var cotas = [];
-  //var js = '[{"Nome":"LUX","Valor":0.00111200}]';
-  //var arrcota = JSON.parse('[{"Nome":"LUX","Valor":0.00111200}]');
+  //var js = '[{"Nome":"LUX","ValorCompra":0.00111200}]';
+  //var arrcota = JSON.parse('[{"Nome":"LUX","ValorCompra":0.00111200}]');
 
   //arrcota.forEach(element => {
   //  myC = Object.assign( new Cota(), element);
   //  myC.UltimoPreco = 10;
   //  cotas.push(myC);
 
-    //myC.variacaoDePreco();
+  //myC.variacaoDePreco();
   //  var a = myC.variacaoPercentualPreco();
 
   //  imprime(myC);
@@ -52,15 +52,15 @@ function ProcessaAcao(acao)
 {
   switch(acao)
   {
-    case 'q':
-      cadastroCota.LeCotas(processaCotas);
-      break;
-    case 'c':
-      cadastroCota.LeCotas(cadastroCota.cadastrarCotas);
-      break;
-    case 'r':
-      cadastroCota.LeCotas(cadastroCota.removerCotas); 
-      break;
+  case 'q':
+    cadastroCota.LeCotas(processaCotas);
+    break;
+  case 'c':
+    cadastroCota.LeCotas(cadastroCota.cadastrarCotas);
+    break;
+  case 'r':
+    cadastroCota.LeCotas(cadastroCota.removerCotas); 
+    break;
   }
 }
 
@@ -73,9 +73,9 @@ function ControlaFluxo()
       message: "vai fazer o q viado? q = cotacao, s = sair, c = cadastrar, r = remover"
     }];
 
-    inquirer.prompt(questions).then(answers => {
-      ProcessaAcao(answers.acao);
-    });
+  inquirer.prompt(questions).then(answers => {
+    ProcessaAcao(answers.acao);
+  });
 }
 
 function processaCotas(cotas)
@@ -98,7 +98,7 @@ function processaCotas(cotas)
 
         if(c.Nome == "BTC")
         {
-          c.UltimoPreco = c.Valor;
+          c.UltimoPreco = c.ValorCompra;
         }
         else
         {         
@@ -111,7 +111,7 @@ function processaCotas(cotas)
           // salvar cotas
         }
         
-        imprime(c);
+        imprimir(c);
         cotas[index] = c;
       });
 
@@ -141,27 +141,38 @@ function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
       resp.on('end', () => {
         var cotacoes = JSON.parse(data).Data;
     
-          var BTCUSDT = cotacoes.filter(function (item) {
-            return item.Label == "BTC/USDT";
-          })[0];
+        var BTCUSDT = cotacoes.filter(function (item) {
+          return item.Label == "BTC/USDT";
+        })[0];
   
-          precoBTC = BTCUSDT.LastPrice;
+        precoBTC = BTCUSDT.LastPrice;
 
-          console.log(nome + ": " + (precoBTC * qtdBTC));
-          //return precoBTC * qtdBTC; asnyc await
+        //console.log(nome + ": " + (precoBTC * qtdBTC));
+        
+        var valor = Math.round((precoBTC * qtdBTC) * 100) / 100;
+        console.log(nome + ": " + valor);
+
+        //return precoBTC * qtdBTC; asnyc await
           
-        });
+      });
     }).on("error", (err) => {
       console.log("Error: " + err.message);
     });
   }
 }
 
-function imprime(cota)
+function imprimir(cota)
 {
   var valor = Math.round(cota.VariacaoPercentualPreco() * 100) / 100;
 
-  console.log(cota.Nome + ' ' + valor * 100 + '%              ' + JSON.stringify(cota));
+  console.log(cota.Nome + ' ' + valor * 100 + '%   '  + cota.VariacaoMaiorPreco() +'%         ' + JSON.stringify(cota));
+
+  imprimirLiquidacoes(cota);
 
   ConverterCotaBTCXUSD(cota.Nome,cota.QuantidadeBTC());
+}
+
+function imprimirLiquidacoes(cota){
+  if(cota.MelhorLiquidar())
+    console.log("Liquidar " + cota.Nome);
 }
