@@ -4,6 +4,10 @@ var Cota = require('./cota.js')
 var cadastroCota = require('./gravacota.js')
 const https = require('https');
 var inquirer = require('inquirer');
+
+var CTPClient = require('./coreCTPClient.js');
+
+
 var opts = require('url').parse('https://www.cryptopia.co.nz/api/GetMarkets/BTC');
 
 var precoBTC = 0;
@@ -12,7 +16,7 @@ opts.headers = {
   'User-Agent' : 'javascript',
   'Accept': 'application/json',
   'Content-Type': 'application/json',
-}
+};
 
 //var debug = true;
 var debug = false;
@@ -60,6 +64,9 @@ function ProcessaAcao(acao)
     break;
   case 'r':
     cadastroCota.LeCotas(cadastroCota.removerCotas); 
+    break;
+  case 'i':
+    IntegracaoCTPCLient();
     break;
   }
 }
@@ -175,4 +182,17 @@ function imprimir(cota)
 function imprimirLiquidacoes(cota){
   if(cota.MelhorLiquidar())
     console.log("Liquidar " + cota.Nome);
+}
+
+function IntegracaoCTPCLient(){
+  var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
+  var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
+  
+  CTPClient.APIQUERY(Imprimir,"GetTransactions");
+
+}
+
+function Imprimir(err, qlqrCoisa)
+{
+  console.log(qlqrCoisa);
 }
