@@ -188,8 +188,9 @@ function IntegracaoCTPCLient(){
   var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
   var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
   
-  CTPClient.APIQUERY(Imprimir,"GetTransactions");
-
+  var param = ['BTC_USDT','10'];  
+  // PARAM P/ PRIVATE { 'Market': "020/DOGE", 'Type': "Sell", 'Rate': 0.001, 'Amount': 1000 }
+  CTPClient.APIQUERY(Imprimir,"GetMarketHistory", param);
 }
 
 function Imprimir(err, qlqrCoisa)
