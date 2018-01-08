@@ -1,15 +1,16 @@
-"use strict"
+'use strict';
 
 class Cota
 {
   constructor (nome, valor, quantidade)
   {
-      this.Nome = nome;
-      this.ValorCompra = valor;
-      this.Quantidade = quantidade;
-      this.MaiorPreco = 0;
-      // privada
-      var ultimoPreco;
+    this.Nome = nome;
+    this.Label = nome + '/BTC';
+    this.ValorCompra = valor;
+    this.Quantidade = quantidade;
+    this.MaiorPreco = 0;
+    // privada
+    var ultimoPreco;
   }
 
   get UltimoPreco(){
@@ -34,7 +35,7 @@ class Cota
 
   QuantidadeBTC()
   {
-    if(this.Nome === "BTC")
+    if(this.Nome === 'BTC')
       return this.Quantidade;
 
     return this.UltimoPreco * this.Quantidade;
@@ -60,7 +61,7 @@ module.exports = Cota;
 
 function testeCota()
 {
-  var c = new Cota("vai", 10);
+  var c = new Cota('vai', 10);
   c.UltimoPreco = 11;
 
   console.log(JSON.stringify(c));
