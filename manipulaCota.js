@@ -12,8 +12,6 @@ opts.headers = {
 
 var precoBTC = 0;
 
-exports.LeCotas = (acaoSeguinte) => LeCotas(acaoSeguinte);
-
 function LeCotas(acaoSeguinte)
 {
   const fs = require('fs');
@@ -26,8 +24,6 @@ function LeCotas(acaoSeguinte)
     acaoSeguinte(cotas);
   }); 
 }
-
-exports.removerCotas = removerCotas;
 
 function removerCotas(cotas){
   console.log(JSON.stringify(cotas));
@@ -48,8 +44,6 @@ function removerCotas(cotas){
   });
 
 }
-
-exports.cadastrarCotas = cadastrarCotas;
 
 function cadastrarCotas(cotas){
   LeQlqrMerda(cotas);
@@ -89,8 +83,6 @@ function LeQlqrMerda(cotas)
   });
 }
 
-exports.GravaCota = GravaCota;
-
 function GravaCota(cotas)
 {
   const fs = require('fs');
@@ -101,8 +93,6 @@ function GravaCota(cotas)
     console.log('salvado viado');
   });
 }
-
-exports.ConverterCotaBTCXUSD = ConverterCotaBTCXUSD;
 
 function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
   if(precoBTC == 0)
@@ -138,7 +128,6 @@ function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
   }
 }
 
-exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
 function AnalisarHistoricoMercado(Label, Tempo = 1){
   var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
   var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
@@ -180,8 +169,6 @@ function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar)
     console.log("MERCADO VENDENDO " + proporcaoCxV);
 }
 
-
-exports.processaCotas = processaCotas;
 function processaCotas(cotas)
 {
   https.get(opts, (resp) => {
@@ -241,3 +228,11 @@ function imprimirLiquidacoes(cota){
   if(cota.MelhorLiquidar())
     console.log('Liquidar ' + cota.Nome);
 }
+
+exports.removerCotas = removerCotas;
+exports.ConverterCotaBTCXUSD = ConverterCotaBTCXUSD;
+exports.LeCotas = (acaoSeguinte) => LeCotas(acaoSeguinte);
+exports.cadastrarCotas = cadastrarCotas;
+exports.GravaCota = GravaCota;
+exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
+exports.processaCotas = processaCotas;
