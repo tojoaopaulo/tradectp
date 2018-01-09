@@ -12,7 +12,9 @@ var debug = false;
 
 if(debug)
 {
-  manipulaCota.LeCotas(processaCotas);
+  manipulaCota.AnalisarHistoricoMercado('LUX_BTC',1);
+
+  //manipulaCota.LeCotas(processaCotas);
   
   //var cotas = [];
   //var js = '[{"Nome":"LUX","ValorCompra":0.00111200}]';

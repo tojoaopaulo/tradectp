@@ -1,41 +1,36 @@
 var https = require('https');
 var async = require('async');
 var crypto = require('crypto');
+const axios = require("axios");
 
 API_KEY='';
 API_SECRET='';
 
-function apiQuery( callback2, method, params ) {
+async function apiQuery(method, params ) {
 	if ( ! params ) params = {};
 	
   var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
   var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
-  var host_name = 'www.cryptopia.co.nz';
-	var uri = '/Api/' + method;
+  //var host_name = 'www.cryptopia.co.nz';
+  var host_name = 'https://www.cryptopia.co.nz';
+
+	var uri = '/Api/' + method + '/';
 	
   if ( public_set.indexOf( method ) > -1 ) {
 
-    if ( params ) uri += '/' + params.join('/');
-    var options = {
-      host: host_name,
-      path: uri,
-		};
-		
-    callback = function(response) {
-      var str = '';
-      response.on('data', function (chunk) {
-        str += chunk;
-      });
-      response.on('end', function () {
-        return callback2(null, str);
-      });
-		};
-		
-		https.request(options, callback).end();
-		
-	} else 
-	if (  private_set.indexOf( method ) > -1 ) {
+    if ( params ) uri += params.join('/');
 
+    try {
+      var url = host_name+uri;
+      const resp = await axios.get(url);
+      return resp.data;
+    } catch (error) {
+      console.log(error.message);
+    }
+		
+  } 
+  else if (  private_set.indexOf( method ) > -1 )
+  {
     var nonce = Math.floor(new Date().getTime() / 1000);
     var md5 = crypto.createHash('md5').update( JSON.stringify( params ) ).digest();
     var requestContentBase64String = md5.toString('base64');

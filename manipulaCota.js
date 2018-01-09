@@ -128,7 +128,7 @@ function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
   }
 }
 
-function AnalisarHistoricoMercado(Label, Tempo = 1){
+async function AnalisarHistoricoMercado(Label, Tempo = 1){
   var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
   var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
     
@@ -136,12 +136,17 @@ function AnalisarHistoricoMercado(Label, Tempo = 1){
   //var param = ['BTC_USD','1'];  
 
   // PARAM P/ PRIVATE { 'Market': "020/DOGE", 'Type': "Sell", 'Rate': 0.001, 'Amount': 1000 }
-  CTPClient.APIQUERY(CalculaTendenciaPorOrdens,'GetMarketHistory', param);
+  var result = await CTPClient.APIQUERY('GetMarketHistory', param);
+
+  if(result.Data != null)
+    CalculaTendenciaPorOrdens(result.Data);
+  else
+    console.log("deu ruim ");
 }
 
-function CalculaTendenciaPorOrdens(err, ordens)
+function CalculaTendenciaPorOrdens(ordens)
 {
-  var histOrdens = JSON.parse(ordens);
+  var histOrdens = ordens;
   CalculaTendenciaPorRange(histOrdens, 200);
   CalculaTendenciaPorRange(histOrdens, 20);
 }
@@ -149,7 +154,7 @@ function CalculaTendenciaPorOrdens(err, ordens)
 function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar)
 {
   var valorProporcao = (15 / 100) * qtdOrdensAAnalisar;
-  var amostraOrdens = ordens.Data.slice(0,qtdOrdensAAnalisar);
+  var amostraOrdens = ordens.slice(0,qtdOrdensAAnalisar);
   
   var compra = amostraOrdens.filter(function (item) {
     return item.Type == "Buy";

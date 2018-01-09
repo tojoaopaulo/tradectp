@@ -3,7 +3,7 @@ var CTPClient = require('./coreCTPClient.js');
 
 AnalisarHistoricoMercado();
 
-function AnalisarHistoricoMercado(Label, Tempo = 1){
+async function AnalisarHistoricoMercado(Label, Tempo = 1){
   var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
   var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
     
@@ -11,7 +11,8 @@ function AnalisarHistoricoMercado(Label, Tempo = 1){
   //var param = ['BTC_USD','1'];  
 
   // PARAM P/ PRIVATE { 'Market': "020/DOGE", 'Type': "Sell", 'Rate': 0.001, 'Amount': 1000 }
-  CTPClient.APIQUERY(CalculaTendenciaPorOrdens,'GetMarketHistory', param);
+  var result = await CTPClient.APIQUERY('GetMarketHistory', param);
+  console.log(result);
 }
 
 function CalculaTendenciaPorOrdens(err, ordens)
