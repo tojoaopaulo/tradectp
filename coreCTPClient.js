@@ -2,11 +2,21 @@ var https = require('https');
 var async = require('async');
 var crypto = require('crypto');
 const axios = require("axios");
+var fs = require('fs');
 
 API_KEY='';
 API_SECRET='';
 
+function CarregarKeys()
+{
+  var keys = JSON.parse(fs.readFileSync('config','utf8'));
+  API_KEY = keys.API_KEY;
+  API_SECRET = keys.API_SECRET;  
+}
+
 async function apiQuery(method, params ) {
+  CarregarKeys();
+
 	if ( ! params ) params = {};
 	
   var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
