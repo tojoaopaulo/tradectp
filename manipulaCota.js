@@ -4,6 +4,10 @@ const https = require('https');
 var CTPClient = require('./coreCTPClient.js');
 var opts = require('url').parse('https://www.cryptopia.co.nz/api/GetMarkets/BTC');
 
+var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
+var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
+  
+
 opts.headers = { 
   'User-Agent' : 'javascript',
   'Accept': 'application/json',
@@ -129,9 +133,7 @@ function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
 }
 
 async function AnalisarHistoricoMercado(Label, Tempo = 1){
-  var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
-  var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
-    
+
   var param = [Label,Tempo];
   //var param = ['BTC_USD','1'];  
 
@@ -142,6 +144,19 @@ async function AnalisarHistoricoMercado(Label, Tempo = 1){
     CalculaTendenciaPorOrdens(result.Data);
   else
     console.log("deu ruim ");
+}
+
+async function MinhaCarteira()
+{
+  var result = await CTPClient.APIQUERY('GetBalance');
+
+  result = result.filter(function (item) {
+    return item.Total > 0;
+  });
+
+  result.map(r => console.log("Nome: "+ r.Symbol + " Total: "+  r.Total));
+
+  //console.log(JSON.stringify(result));
 }
 
 function CalculaTendenciaPorOrdens(ordens)
@@ -241,3 +256,4 @@ exports.cadastrarCotas = cadastrarCotas;
 exports.GravaCota = GravaCota;
 exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
 exports.processaCotas = processaCotas;
+exports.MinhaCarteira = MinhaCarteira;

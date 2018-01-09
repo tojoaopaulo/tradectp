@@ -12,7 +12,8 @@ var debug = false;
 
 if(debug)
 {
-  manipulaCota.AnalisarHistoricoMercado('LUX_BTC',1);
+  //manipulaCota.MinhaCarteira();
+  //manipulaCota.AnalisarHistoricoMercado('LUX_BTC',1);
 
   //manipulaCota.LeCotas(processaCotas);
   
@@ -58,6 +59,9 @@ function ProcessaAcao(acao)
     break;
   case 'i':
     manipulaCota.AnalisarHistoricoMercado('LUX_BTC',1);
+    break;
+  case 'm':
+    manipulaCota.MinhaCarteira();
     break;
   }
 }

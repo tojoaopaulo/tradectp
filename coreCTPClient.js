@@ -34,33 +34,21 @@ async function apiQuery(method, params ) {
     var nonce = Math.floor(new Date().getTime() / 1000);
     var md5 = crypto.createHash('md5').update( JSON.stringify( params ) ).digest();
     var requestContentBase64String = md5.toString('base64');
-		var signature = API_KEY + 'POST' + encodeURIComponent( 'https://' + host_name + uri ).toLowerCase() + nonce + requestContentBase64String;
+		var signature = API_KEY + 'POST' + encodeURIComponent( host_name + uri ).toLowerCase() + nonce + requestContentBase64String;
 		
 		var hmacsignature = crypto.createHmac('sha256', new Buffer( API_SECRET, 'base64' ) ).update( signature ).digest().toString('base64');
 		
     var header_value = 'amx ' + API_KEY + ':' + hmacsignature + ':' + nonce;
 		var headers = { 'Authorization': header_value, 'Content-Type':'application/json; charset=utf-8' };
 		
-    var options = {
-      host: host_name,
-      path: uri,
-      method: 'POST',
-      headers: headers
-		};
-		
-    callback = function(response) {
-      var str = '';
-      response.on('data', function (chunk) {
-        str += chunk;
-      });
-      response.on('end', function () {
-        return callback2(null, str);
-      });
-		};
-		
-    var req = https.request(options, callback);
-    req.write( JSON.stringify( params ) );
-    req.end();
+    try {
+      var url = host_name+uri;
+      const resp = await axios.post(url,params, { headers: headers });
+
+      return resp.data.Data;
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 }
 
