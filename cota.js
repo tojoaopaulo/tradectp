@@ -20,7 +20,7 @@ class Cota
   set UltimoPreco(value){
     this.ultimoPreco = value;
 
-    if(value > this.MaiorPreco)
+    if(typeof this.MaiorPreco != 'number' || this.MaiorPreco === undefined || this.MaiorPreco == '' || value > this.MaiorPreco )
       this.MaiorPreco = value;
   }
 

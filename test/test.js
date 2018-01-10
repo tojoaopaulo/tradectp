@@ -1,6 +1,8 @@
 var assert = require('assert');
 var Carteira = require('../Carteira.js');
 var Bitcoin = require('../Bitcoin.js');
+var Cota = require('../Cota.js');
+
 /*
 describe('Carteira', ()=> {
   it('Deve imprimir minha carteira na CTP', () => {
@@ -14,7 +16,27 @@ describe('Carteira', ()=> {
 });*/
 
 describe('Bitcoin', () => {
-  it('Deve retornar o valor do bitcoin', () => {
-    Bitcoin.PrecoBTC();
+  it('Deve retornar o valor do bitcoin', async () => {
+    assert.ok(await Bitcoin.PrecoBTC() > 0);
+    //done();
+  });
+});
+
+describe('Cota', () => {
+  it('Ao criar uma nova cota e atribuir um ultimo valor, deve atualizar o maior valor', () => {
+    var cota = new Cota('BTC', 100, 1);
+    cota.UltimoPreco = 10;
+    assert.equal(cota.MaiorPreco, cota.UltimoPreco);
+  });
+
+  it('Ao criar uma nova cota via JSON e atribuir um ultimo valor, deve atualizar o maior valor', () => {
+    var json = '{"Nome":"BTC","Label":"BTC/BTC","ValorCompra":"13990","Quantidade":"0.00537","MaiorPreco":{},"ultimoPreco":{}}';
+
+    var cota = JSON.parse(json);
+
+    cota = Object.assign( new Cota(), cota);
+    
+    cota.UltimoPreco = 10;
+    assert.equal(cota.MaiorPreco, cota.UltimoPreco);
   });
 });
