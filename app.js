@@ -1,6 +1,7 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; 
 
 var Cota = require('./cota.js');
+var Carteira = require('./Carteira.js');
 var manipulaCota = require('./manipulaCota.js');
 const https = require('https');
 var inquirer = require('inquirer');
@@ -61,7 +62,10 @@ function ProcessaAcao(acao)
     manipulaCota.AnalisarHistoricoMercado('LUX_BTC',1);
     break;
   case 'm':
-    manipulaCota.MinhaCarteira();
+    Carteira.MinhaCarteira();
+    break;
+  case 'v':
+    Carteira.EmitirOrdemVenda({Label: 'SKY/BTC'});
     break;
   }
 }

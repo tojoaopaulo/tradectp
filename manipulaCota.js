@@ -147,19 +147,6 @@ async function AnalisarHistoricoMercado(Label, Tempo = 1){
     console.log("deu ruim ");
 }
 
-async function MinhaCarteira()
-{
-  var result = await CTPClient.APIQUERY('GetBalance');
-
-  result = result.filter(function (item) {
-    return item.Total > 0;
-  });
-
-  result.map(r => console.log("Nome: "+ r.Symbol + " Total: "+  r.Total));
-
-  //console.log(JSON.stringify(result));
-}
-
 function CalculaTendenciaPorOrdens(ordens)
 {
   var histOrdens = ordens;
@@ -262,4 +249,3 @@ exports.cadastrarCotas = cadastrarCotas;
 exports.GravaCota = GravaCota;
 exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
 exports.processaCotas = processaCotas;
-exports.MinhaCarteira = MinhaCarteira;
