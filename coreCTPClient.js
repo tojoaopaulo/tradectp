@@ -21,7 +21,6 @@ async function apiQuery(method, params ) {
 	
   var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
   var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
-  //var host_name = 'www.cryptopia.co.nz';
   var host_name = 'https://www.cryptopia.co.nz';
 
 	var uri = '/Api/' + method + '/';

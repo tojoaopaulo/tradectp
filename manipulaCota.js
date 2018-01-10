@@ -99,6 +99,7 @@ function GravaCota(cotas)
 }
 
 function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
+  // TODO: QUANDO FOR RODAR DIRETO ALTERAR ESSA ROTINA PARA ATUALIZAR O VALOR DO BTC DE TEMPO EM TEMPO
   if(precoBTC == 0)
   {
     var url = 'https://www.cryptopia.co.nz/api/GetMarkets/USDT';
@@ -225,12 +226,17 @@ function processaCotas(cotas)
         imprimir(c);
         cotas[index] = c;
       });
-
+      ImprimirValorBTC();
       GravaCota(cotas);
     });
   }).on('error', (err) => {
     console.log('Error: ' + err.message);
   });
+}
+
+function ImprimirValorBTC()
+{
+  ConverterCotaBTCXUSD('BTC');
 }
 
 function imprimir(cota)
