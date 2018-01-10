@@ -99,39 +99,10 @@ function GravaCota(cotas)
   });
 }
 
-function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
-  // TODO: QUANDO FOR RODAR DIRETO ALTERAR ESSA ROTINA PARA ATUALIZAR O VALOR DO BTC DE TEMPO EM TEMPO
-  if(precoBTC == 0)
-  {
-    var url = 'https://www.cryptopia.co.nz/api/GetMarkets/USDT';
-  
-    opts = require('url').parse(url);
-  
-    https.get(opts, (resp) => {
-      let data = '';
-     
-      // A chunk of data has been recieved.
-      resp.on('data', (chunk) => {
-        data += chunk;
-      });
-     
-      // The whole response has been received. Print out the result.
-      resp.on('end', () => {
-        var cotacoes = JSON.parse(data).Data;
-    
-        var BTCUSDT = cotacoes.filter(function (item) {
-          return item.Label == 'BTC/USDT';
-        })[0];
-  
-        precoBTC = BTCUSDT.LastPrice;
-        
-        var valor = Math.round((precoBTC * qtdBTC) * 100) / 100;
-        console.log(nome + ': ' + valor);          
-      });
-    }).on('error', (err) => {
-      console.log('Error: ' + err.message);
-    });
-  }
+async function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
+  var precoBTC = await Bitcoin.PrecoBTC();
+  var valor = Math.round((precoBTC * qtdBTC) * 100) / 100;
+  console.log(nome + ': ' + valor);  
 }
 
 async function AnalisarHistoricoMercado(Label, Tempo = 1){
