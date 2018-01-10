@@ -1,0 +1,30 @@
+{
+  "name": "crlwerctp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "Bitcoin.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "async": "^2.6.0",
+    "axios": "^0.17.1",
+    "inquirer": "^4.0.2"
+  },
+  "devDependencies": {
+    "eslint-config-google": "^0.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tojoaopaulo/tradectp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tojoaopaulo/tradectp/issues"
+  },
+  "homepage": "https://github.com/tojoaopaulo/tradectp#readme"
+}

@@ -58,15 +58,3 @@ class Cota
 }
 
 module.exports = Cota;
-
-function testeCota()
-{
-  var c = new Cota('vai', 10);
-  c.UltimoPreco = 11;
-
-  console.log(JSON.stringify(c));
-  console.log(c.variacaoDePreco());
-  console.log(c.variacaoPercentualPreco());
-}
-
-//testeCota();

@@ -1,19 +1,10 @@
 var inquirer = require('inquirer');
 var Cota = require('./cota.js');
 var Bitcoin = require('./Bitcoin.js');
-const https = require('https');
 var CTPClient = require('./coreCTPClient.js');
-var opts = require('url').parse('https://www.cryptopia.co.nz/api/GetMarkets/BTC');
 
 var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
 var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
-  
-
-opts.headers = { 
-  'User-Agent' : 'javascript',
-  'Accept': 'application/json',
-  'Content-Type': 'application/json',
-};
 
 var precoBTC = 0;
 
@@ -149,48 +140,28 @@ function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar)
     console.log("MERCADO VENDENDO " + proporcaoCxV);
 }
 
-function processaCotas(cotas)
+async function processaCotas(cotas)
 {
-  https.get(opts, (resp) => {
-    let data = '';
-   
-    // A chunk of data has been recieved.
-    resp.on('data', (chunk) => {
-      data += chunk;
-    });
-   
-    // The whole response has been received. Print out the result.
-    resp.on('end', () => {
-      var cotacoes = JSON.parse(data).Data;
+  var cotacoes = await CTPClient.APIQUERY('GetMarkets', ['BTC'] );
 
-      cotas.forEach(async (c, index) => {
+  cotas.forEach(async (c, index) => {
+    c = Object.assign( new Cota(), c);
 
-        c = Object.assign( new Cota(), c);
-
-        if(c.Nome == 'BTC')
-        {
-          c.UltimoPreco = await Bitcoin.PrecoBTC();
-        }
-        else
-        {         
-          var itemCota = cotacoes.filter(function (item) {
-            return item.Label == c.Label;
-          })[0];
+    if(c.Nome == 'BTC')
+      c.UltimoPreco = await Bitcoin.PrecoBTC();
+    else
+    {         
+      var itemCota = cotacoes.filter(function (item) {
+        return item.Label == c.Label;
+      })[0];
   
-          c.UltimoPreco = itemCota.LastPrice; 
-  
-          // salvar cotas
-        }
-        
-        imprimir(c);
-        cotas[index] = c;
-      });
-      ImprimirValorBTC();
-      GravaCota(cotas);
-    });
-  }).on('error', (err) => {
-    console.log('Error: ' + err.message);
+       c.UltimoPreco = itemCota.LastPrice; 
+    }
+      imprimir(c);
+      cotas[index] = c;
   });
+  ImprimirValorBTC();
+  GravaCota(cotas);
 }
 
 function ImprimirValorBTC()

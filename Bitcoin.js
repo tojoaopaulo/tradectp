@@ -1,4 +1,3 @@
-const axios = require("axios");
 var CTPClient = require('./coreCTPClient.js');
 
 module.exports.PrecoBTC = async function PrecoBTC()

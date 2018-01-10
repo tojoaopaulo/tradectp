@@ -1,5 +1,3 @@
-var https = require('https');
-var async = require('async');
 var crypto = require('crypto');
 const axios = require("axios");
 var fs = require('fs');
