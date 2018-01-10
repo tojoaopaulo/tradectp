@@ -32,7 +32,7 @@ async function apiQuery(method, params ) {
     try {
       var url = host_name+uri;
       const resp = await axios.get(url);
-      return resp.data;
+      return resp.data.Data;
     } catch (error) {
       console.log(error.message);
     }

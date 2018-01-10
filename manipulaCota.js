@@ -1,5 +1,6 @@
 var inquirer = require('inquirer');
 var Cota = require('./cota.js');
+var Bitcoin = require('./Bitcoin.js');
 const https = require('https');
 var CTPClient = require('./coreCTPClient.js');
 var opts = require('url').parse('https://www.cryptopia.co.nz/api/GetMarkets/BTC');
@@ -141,8 +142,8 @@ async function AnalisarHistoricoMercado(Label, Tempo = 1){
   // PARAM P/ PRIVATE { 'Market': "020/DOGE", 'Type': "Sell", 'Rate': 0.001, 'Amount': 1000 }
   var result = await CTPClient.APIQUERY('GetMarketHistory', param);
 
-  if(result.Data != null)
-    CalculaTendenciaPorOrdens(result.Data);
+  if(result != null)
+    CalculaTendenciaPorOrdens(result);
   else
     console.log("deu ruim ");
 }
@@ -191,13 +192,13 @@ function processaCotas(cotas)
     resp.on('end', () => {
       var cotacoes = JSON.parse(data).Data;
 
-      cotas.forEach((c, index) => {
+      cotas.forEach(async (c, index) => {
 
         c = Object.assign( new Cota(), c);
 
         if(c.Nome == 'BTC')
         {
-          c.UltimoPreco = c.ValorCompra;
+          c.UltimoPreco = await Bitcoin.PrecoBTC();
         }
         else
         {         
