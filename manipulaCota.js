@@ -8,17 +8,14 @@ var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTrad
 
 var precoBTC = 0;
 
-function LeCotas(acaoSeguinte)
+async function LeCotas()
 {
-  const fs = require('fs');
+  const fs = require('fs-promise');
 
-  fs.readFile('./cotas.txt', function(err,data){
-    if (err) throw err;
+  var cotas = await fs.readFile('./cotas.txt', 'utf8');
+  cotas = cotas != undefined && cotas != '' ? JSON.parse(cotas) : [];
 
-    var cotas = data.length != 0 ? JSON.parse(data) : [];
-
-    acaoSeguinte(cotas);
-  }); 
+  return cotas;
 }
 
 function removerCotas(cotas){
@@ -187,7 +184,7 @@ function imprimirLiquidacoes(cota){
 
 exports.removerCotas = removerCotas;
 exports.ConverterCotaBTCXUSD = ConverterCotaBTCXUSD;
-exports.LeCotas = (acaoSeguinte) => LeCotas(acaoSeguinte);
+exports.LeCotas = LeCotas;
 exports.cadastrarCotas = cadastrarCotas;
 exports.GravaCota = GravaCota;
 exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;

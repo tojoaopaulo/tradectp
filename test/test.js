@@ -2,6 +2,7 @@ var assert = require('assert');
 var Carteira = require('../Carteira.js');
 var Bitcoin = require('../Bitcoin.js');
 var Cota = require('../Cota.js');
+var Controlador = require('../app.js');
 
 /*
 describe('Carteira', ()=> {
@@ -35,8 +36,14 @@ describe('Cota', () => {
     var cota = JSON.parse(json);
 
     cota = Object.assign( new Cota(), cota);
-    
+
     cota.UltimoPreco = 10;
     assert.equal(cota.MaiorPreco, cota.UltimoPreco);
   });
 });
+
+describe('Controlador de fluxo', () =>
+    it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', () => {
+        Controlador.ProcessaAcao('q');
+    })
+);

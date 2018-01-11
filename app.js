@@ -9,18 +9,18 @@ if(process.argv[2] !== undefined)
 else
   ControlaFluxo();
 
-function ProcessaAcao(acao)
+async function ProcessaAcao(acao)
 {
   switch(acao)
   {
   case 'q':
-    manipulaCota.LeCotas(manipulaCota.processaCotas);
+    manipulaCota.processaCotas(await manipulaCota.LeCotas());
     break;
   case 'c':
-    manipulaCota.LeCotas(manipulaCota.cadastrarCotas);
+    manipulaCota.cadastrarCotas(await manipulaCota.LeCotas());
     break;
   case 'r':
-    manipulaCota.LeCotas(manipulaCota.removerCotas); 
+    manipulaCota.removerCotas(await manipulaCota.LeCotas()); 
     break;
   case 'i':
     manipulaCota.AnalisarHistoricoMercado('SKY_BTC',1);
@@ -47,3 +47,5 @@ function ControlaFluxo()
     ProcessaAcao(answers.acao);
   });
 }
+
+module.exports.ProcessaAcao = ProcessaAcao;
