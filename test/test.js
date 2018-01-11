@@ -17,7 +17,8 @@ describe('Carteira', ()=> {
 });*/
 
 describe('Bitcoin', () => {
-  it('Deve retornar o valor do bitcoin', async () => {
+  it.only('Deve retornar o valor do bitcoin', async () => {
+    assert.ok(await Bitcoin.PrecoBTC() > 0);
     assert.ok(await Bitcoin.PrecoBTC() > 0);
     //done();
   });
