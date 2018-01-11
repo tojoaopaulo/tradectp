@@ -82,8 +82,6 @@ function GravaCota(cotas)
 
   fs.writeFile('cotas.txt', JSON.stringify(cotas), (err) => {
     if(err) throw err;
-
-    console.log('salvado viado');
   });
 }
 
@@ -141,6 +139,24 @@ async function processaCotas(cotas)
 {
   var cotacoes = await CTPClient.APIQUERY('GetMarkets', ['BTC'] );
 
+  for(let c of cotas)
+  {
+    c = Object.assign( new Cota(), c);
+
+    if(c.Nome == 'BTC')
+      c.UltimoPreco = await Bitcoin.PrecoBTC();
+    else
+    {         
+      var itemCota = cotacoes.filter(function (item) {
+        return item.Label == c.Label;
+      })[0];
+  
+       c.UltimoPreco = itemCota.LastPrice; 
+    }
+    await imprimir(c);
+    //cotas[index] = c;
+  }
+/*
   cotas.forEach(async (c, index) => {
     c = Object.assign( new Cota(), c);
 
@@ -156,7 +172,7 @@ async function processaCotas(cotas)
     }
       imprimir(c);
       cotas[index] = c;
-  });
+  });*/
   ImprimirValorBTC();
   GravaCota(cotas);
 }
@@ -166,15 +182,15 @@ function ImprimirValorBTC()
   ConverterCotaBTCXUSD('BTC');
 }
 
-function imprimir(cota)
+async function imprimir(cota)
 {
   var valor = Math.round(cota.VariacaoPercentualPreco() * 100) / 100;
 
   console.log(cota.Nome + ' ' + valor * 100 + '%   '  + cota.VariacaoMaiorPreco() +'%         ' + JSON.stringify(cota));
 
-  imprimirLiquidacoes(cota);
+  await imprimirLiquidacoes(cota);
 
-  ConverterCotaBTCXUSD(cota.Nome,cota.QuantidadeBTC());
+  await ConverterCotaBTCXUSD(cota.Nome,cota.QuantidadeBTC());
 }
 
 function imprimirLiquidacoes(cota){
