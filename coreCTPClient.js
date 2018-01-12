@@ -59,14 +59,31 @@ async function apiQuery(method, params ) {
   }
 }
 
-exports.APIQUERY = apiQuery;
-
 module.exports.BuscarUltimasOrdensEfetivadas = async function BuscarUltimasOrdensEfetivadas(Label, Tempo) {
   //var param = ['BTC_USD','1']; 
   var LblAnalise = Label.replace('/','_');
   var param = [LblAnalise,Tempo];
-  return await this.APIQUERY('GetMarketHistory', param);  
+  return await apiQuery('GetMarketHistory', param);  
 }
+
+module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
+  return await apiQuery('GetMarkets', [Mercado]);
+}
+
+module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, quantidade ) {
+  var params = {
+    Market: label,
+    Type: 'Sell',
+    Rate: preco,
+    Amount: quantidade
+  };
+  return await apiQuery('SubmitTrade', params);
+}
+
+module.exports.ConsultarCarteira = async function ConsultarCarteira() {
+  return await apiQuery('GetBalance');
+}
+
 
 /*
 async.series([

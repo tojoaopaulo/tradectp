@@ -10,7 +10,7 @@ module.exports.PrecoBTC = async function PrecoBTC()
   if(!precoBTC > 0 || atualizaPorTempo)
   {
     ultimaConsulta = agora;
-    var result = await CTPClient.APIQUERY('GetMarkets', ['USDT']);
+    var result = await CTPClient.BuscarMercados('USDT');
 
     var BTCUSDT = result.filter(function (item) {
       return item.Label == 'BTC/USDT';

@@ -94,7 +94,7 @@ async function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
 
 async function processaCotas(cotas)
 {
-  var cotacoes = await CTPClient.APIQUERY('GetMarkets', ['BTC'] );
+  var cotacoes = await CTPClient.BuscarMercados('BTC');
 
   for(let c of cotas)
   {

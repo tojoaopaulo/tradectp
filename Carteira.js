@@ -6,7 +6,7 @@ var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTrad
 
 async function MinhaCarteira()
 {
-  var result = await CTPClient.APIQUERY('GetBalance');
+  var result = await CTPClient.ConsultarCarteira();
 
   result = result.filter(function (item) {
     return item.Total > 0;
@@ -19,13 +19,10 @@ async function MinhaCarteira()
 
 async function EmitirOrdemVenda(cota)
 {
-  var params = {
-    Market: cota.Label,
-    Type: 'Sell',
-    Rate: '11111111',
-    Amount: 0.00001
-  };
-  var result = await CTPClient.APIQUERY('SubmitTrade', params);
+  var preco = 11111111;
+  var quantidade = 0.00001;
+
+  var result = await CTPClient.CriarOrdemVenda(cota.Label, preco, quantidade);
 
   console.log('Ordem de venda: ' + result.OrderID);
 }
