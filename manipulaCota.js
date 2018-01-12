@@ -110,12 +110,12 @@ async function MelhorVender(cota)
         break;
       case TendenciaMercado.LATERALIZADO:
         if(cota.VariacaoPercentualPreco() < percentualMaximoPerda)
-        vender = false;
+          vender = false;
         break;
     }
   }
     
-  return false;
+  return vender;
 }
 
 async function AnalisarHistoricoMercado(Label, Tempo = 1){
@@ -250,8 +250,8 @@ async function imprimir(cota)
   await ConverterCotaBTCXUSD(cota.Nome,cota.QuantidadeBTC());
 }
 
-function imprimirLiquidacoes(cota){
-  if(MelhorVender(cota))
+async function imprimirLiquidacoes(cota){
+  if(await MelhorVender(cota))
     console.log('Liquidar ' + cota.Nome);
 }
 
@@ -268,3 +268,6 @@ module.exports.cadastrarCotas = cadastrarCotas;
 module.exports.GravaCota = GravaCota;
 module.exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
 module.exports.processaCotas = processaCotas;
+module.exports.MelhorVender = MelhorVender;
+
+module.exports.imprimirLiquidacoes = imprimirLiquidacoes;

@@ -3,6 +3,8 @@ var Carteira = require('../Carteira.js');
 var Bitcoin = require('../Bitcoin.js');
 var Cota = require('../Cota.js');
 var Controlador = require('../app.js');
+var manipulaCota = require('../manipulaCota.js');
+
 
 /*
 describe('Carteira', ()=> {
@@ -17,7 +19,7 @@ describe('Carteira', ()=> {
 });*/
 
 describe('Bitcoin', () => {
-  it.only('Deve retornar o valor do bitcoin', async () => {
+  it('Deve retornar o valor do bitcoin', async () => {
     assert.ok(await Bitcoin.PrecoBTC() > 0);
     assert.ok(await Bitcoin.PrecoBTC() > 0);
     //done();
@@ -43,8 +45,20 @@ describe('Cota', () => {
   });
 });
 
-describe('Controlador de fluxo', () =>
+describe('Controlador de fluxo', () => {
     it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', () => {
         Controlador.ProcessaAcao('q');
     })
-);
+});
+
+describe('Manipulador de cota', () => {
+  it.only('Ao verificar se é melhor vender, deve calcular se o mercado esta em queda ou subindo e analisar a tendencia', () => {
+    
+    var cota = new Cota('LUX', 13990, 1);
+    cota.UltimoPreco = 13500;
+    cota.MaiorPreco = 15000;
+
+    //manipulaCota.MelhorVender(cota);
+    manipulaCota.imprimirLiquidacoes(cota);
+  })
+});
