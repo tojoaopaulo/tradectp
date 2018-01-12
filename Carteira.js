@@ -4,7 +4,6 @@ var Cota = require('./cota.js');
 var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
 var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
 
-
 async function MinhaCarteira()
 {
   var result = await CTPClient.APIQUERY('GetBalance');

@@ -29,21 +29,16 @@ async function MelhorVender(cota)
 
 async function AnalisarHistoricoMercado(Label, Tempo = 1){
 
-    var LblAnalise = Label.replace('/','_');
-  
-    var param = [LblAnalise,Tempo];
-    //var param = ['BTC_USD','1'];  
-  
-    var result = await CTPClient.APIQUERY('GetMarketHistory', param);
+    var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label, Tempo);
   
     if(result != null)
       return await CalculaTendenciaPorOrdens(result);
     else
       console.log("deu ruim ");
-  }
+}
   
-  function CalculaTendenciaPorOrdens(ordens)
-  {
+function CalculaTendenciaPorOrdens(ordens)
+{
     var histOrdens = ordens;
     var tendenciaLonga = CalculaTendenciaPorRange(histOrdens, 200);
     var tendenciaCurta = CalculaTendenciaPorRange(histOrdens, 20);
@@ -87,10 +82,10 @@ async function AnalisarHistoricoMercado(Label, Tempo = 1){
         tendencia = TendenciaMercado.LATERALIZADO;
   
     return tendencia; 
-  }
+}
   
-  function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar)
-  {
+function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar)
+{
     var valorProporcao = (15 / 100) * qtdOrdensAAnalisar;
     var amostraOrdens = ordens.slice(0,qtdOrdensAAnalisar);
     
@@ -115,7 +110,18 @@ async function AnalisarHistoricoMercado(Label, Tempo = 1){
   
     console.log(tendencia + ' ' + proporcaoCxV);
     return tendencia;
-  }
+}
+
+async function GerarMelhorOrdemVenda() {
+    // Busca as ultimas ordens
+    var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label);
+    // pega as ordens de venda ordenado decrescente por data
+    // verifica um valor comum das ultimas 5 ordens
+    // cria ordem de venda
+
+    // ou pega ultimas ordens de venda existentes
+    // ve um valor comum e remove alguns centavos
+}
 
 module.exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
 module.exports.MelhorVender = MelhorVender;

@@ -61,6 +61,13 @@ async function apiQuery(method, params ) {
 
 exports.APIQUERY = apiQuery;
 
+module.exports.BuscarUltimasOrdensEfetivadas = async function BuscarUltimasOrdensEfetivadas(Label, Tempo) {
+  //var param = ['BTC_USD','1']; 
+  var LblAnalise = Label.replace('/','_');
+  var param = [LblAnalise,Tempo];
+  return await this.APIQUERY('GetMarketHistory', param);  
+}
+
 /*
 async.series([
 	function(callback) {
