@@ -46,14 +46,12 @@ class Cota
     return Math.round(((this.UltimoPreco - this.MaiorPreco) / this.MaiorPreco) * 100);
   }
 
-  MelhorLiquidar()
+  EstaEmQueda()
   {
-    // Se ja existiu alguma alta, entao considera o valor de down em 5%
-    if(this.MaiorPreco > this.ValorCompra  && this.VariacaoMaiorPreco() < -5)
-      return true;
-    else
-      // Se nao houver alta e o preco atual tiver queda de > 7% vende
-      return this.VariacaoMaiorPreco() < -7;
+    var jaTeveAlgumGanho = this.MaiorPreco > this.ValorCompra;
+    var quedaAceitavelStopMovel = jaTeveAlgumGanho ? -5 : -8;
+
+    return this.VariacaoMaiorPreco() < quedaAceitavelStopMovel;
   }
 }
 

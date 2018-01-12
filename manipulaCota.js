@@ -91,16 +91,44 @@ async function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
   console.log(nome + ': ' + valor);  
 }
 
+async function MelhorVender(cota)
+{
+  var periodoTempoParaAnalisar = 1;
+  var percentualMaximoPerda = -10;
+  var vender = false;
+
+  if(cota.EstaEmQueda())
+  {
+    var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
+    
+    switch (tendencia) {
+      case TendenciaMercado.QUEDA:
+        vender = true;
+        break;
+      case TendenciaMercado.ALTA:
+        vender = false;
+        break;
+      case TendenciaMercado.LATERALIZADO:
+        if(cota.VariacaoPercentualPreco() < percentualMaximoPerda)
+        vender = false;
+        break;
+    }
+  }
+    
+  return false;
+}
+
 async function AnalisarHistoricoMercado(Label, Tempo = 1){
 
-  var param = [Label,Tempo];
+  var LblAnalise = Label.replace('/','_');
+
+  var param = [LblAnalise,Tempo];
   //var param = ['BTC_USD','1'];  
 
-  // PARAM P/ PRIVATE { 'Market': "020/DOGE", 'Type': "Sell", 'Rate': 0.001, 'Amount': 1000 }
   var result = await CTPClient.APIQUERY('GetMarketHistory', param);
 
   if(result != null)
-    CalculaTendenciaPorOrdens(result);
+    return await CalculaTendenciaPorOrdens(result);
   else
     console.log("deu ruim ");
 }
@@ -108,8 +136,48 @@ async function AnalisarHistoricoMercado(Label, Tempo = 1){
 function CalculaTendenciaPorOrdens(ordens)
 {
   var histOrdens = ordens;
-  CalculaTendenciaPorRange(histOrdens, 200);
-  CalculaTendenciaPorRange(histOrdens, 20);
+  var tendenciaLonga = CalculaTendenciaPorRange(histOrdens, 200);
+  var tendenciaCurta = CalculaTendenciaPorRange(histOrdens, 20);
+
+  var tendencia;
+
+  if(tendenciaCurta == TendenciaMercado.QUEDA &&
+    tendenciaLonga == TendenciaMercado.QUEDA)
+      tendencia = TendenciaMercado.QUEDA;
+  
+  if(tendenciaCurta == TendenciaMercado.QUEDA &&
+    tendenciaLonga == TendenciaMercado.LATERALIZADO)
+      tendencia = TendenciaMercado.QUEDA;
+  
+  if(tendenciaCurta == TendenciaMercado.QUEDA &&
+    tendenciaLonga == TendenciaMercado.ALTA)
+      tendencia = TendenciaMercado.LATERALIZADO;
+    
+  if(tendenciaCurta == TendenciaMercado.LATERALIZADO &&
+    tendenciaLonga == TendenciaMercado.LATERALIZADO)
+      tendencia = TendenciaMercado.LATERALIZADO;
+    
+  if(tendenciaCurta == TendenciaMercado.LATERALIZADO &&
+    tendenciaLonga == TendenciaMercado.QUEDA)
+      tendencia = TendenciaMercado.LATERALIZADO;
+
+  if(tendenciaCurta == TendenciaMercado.LATERALIZADO &&
+    tendenciaLonga == TendenciaMercado.ALTA)
+      tendencia = TendenciaMercado.LATERALIZADO;
+
+  if(tendenciaCurta == TendenciaMercado.ALTA &&
+    tendenciaLonga == TendenciaMercado.ALTA)
+      tendencia =  TendenciaMercado.ALTA;
+
+  if(tendenciaCurta == TendenciaMercado.ALTA &&
+    tendenciaLonga == TendenciaMercado.LATERALIZADO)
+      tendencia = TendenciaMercado.ALTA;
+
+  if(tendenciaCurta == TendenciaMercado.ALTA &&
+    tendenciaLonga == TendenciaMercado.QUEDA)
+      tendencia = TendenciaMercado.LATERALIZADO;
+
+  return tendencia; 
 }
 
 function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar)
@@ -127,12 +195,17 @@ function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar)
   
   var proporcaoCxV = compra.length - venda.length;
   
+  var tendencia;
+
   if(Math.abs(proporcaoCxV) < valorProporcao)
-    console.log("MERCADO LATERALIZADO " + proporcaoCxV);
+    tendencia = TendenciaMercado.LATERALIZADO;
   else if(proporcaoCxV > 0)
-    console.log("MERCADO COMPRANDO " + proporcaoCxV);  
+    tendencia = TendenciaMercado.ALTA;
   else
-    console.log("MERCADO VENDENDO " + proporcaoCxV);
+    tendencia = TendenciaMercado.QUEDA;
+
+  console.log(tendencia + ' ' + proporcaoCxV);
+  return tendencia;
 }
 
 async function processaCotas(cotas)
@@ -156,23 +229,7 @@ async function processaCotas(cotas)
     await imprimir(c);
     //cotas[index] = c;
   }
-/*
-  cotas.forEach(async (c, index) => {
-    c = Object.assign( new Cota(), c);
 
-    if(c.Nome == 'BTC')
-      c.UltimoPreco = await Bitcoin.PrecoBTC();
-    else
-    {         
-      var itemCota = cotacoes.filter(function (item) {
-        return item.Label == c.Label;
-      })[0];
-  
-       c.UltimoPreco = itemCota.LastPrice; 
-    }
-      imprimir(c);
-      cotas[index] = c;
-  });*/
   ImprimirValorBTC();
   GravaCota(cotas);
 }
@@ -194,14 +251,20 @@ async function imprimir(cota)
 }
 
 function imprimirLiquidacoes(cota){
-  if(cota.MelhorLiquidar())
+  if(MelhorVender(cota))
     console.log('Liquidar ' + cota.Nome);
 }
 
-exports.removerCotas = removerCotas;
-exports.ConverterCotaBTCXUSD = ConverterCotaBTCXUSD;
-exports.LeCotas = LeCotas;
-exports.cadastrarCotas = cadastrarCotas;
-exports.GravaCota = GravaCota;
-exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
-exports.processaCotas = processaCotas;
+const TendenciaMercado = {
+  QUEDA: 'queda',
+  ALTA: 'alta',
+  LATERALIZADO: 'lateralizado'
+};
+
+module.exports.removerCotas = removerCotas;
+module.exports.ConverterCotaBTCXUSD = ConverterCotaBTCXUSD;
+module.exports.LeCotas = LeCotas;
+module.exports.cadastrarCotas = cadastrarCotas;
+module.exports.GravaCota = GravaCota;
+module.exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
+module.exports.processaCotas = processaCotas;

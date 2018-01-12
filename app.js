@@ -14,7 +14,11 @@ async function ProcessaAcao(acao)
   switch(acao)
   {
   case 'q':
-    manipulaCota.processaCotas(await manipulaCota.LeCotas());
+  try {
+    manipulaCota.processaCotas(await manipulaCota.LeCotas());    
+  } catch (error) {
+    console.log(error)
+  }
     break;
   case 'c':
     manipulaCota.cadastrarCotas(await manipulaCota.LeCotas());
