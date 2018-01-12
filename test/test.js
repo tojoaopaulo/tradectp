@@ -6,23 +6,21 @@ var Controlador = require('../app.js');
 var manipulaCota = require('../manipulaCota.js');
 
 
-/*
+
 describe('Carteira', ()=> {
-  it('Deve imprimir minha carteira na CTP', () => {
-    Carteira.MinhaCarteira('SKY/BTC');
+  it('Deve imprimir minha carteira na CTP', async() => {
+    await Carteira.MinhaCarteira('SKY/BTC');
   });
-
-  it('Deve criar uma ordem com sucesso', () => {
-    Carteira.EmitirOrdemVenda({ 'Label': 'SKY/BTC' });
+/*
+  it('Deve criar uma ordem com sucesso', async() => {
+    await Carteira.EmitirOrdemVenda({ 'Label': 'SKY/BTC' });
   });
-
-});*/
+*/
+});
 
 describe('Bitcoin', () => {
   it('Deve retornar o valor do bitcoin', async () => {
     assert.ok(await Bitcoin.PrecoBTC() > 0);
-    assert.ok(await Bitcoin.PrecoBTC() > 0);
-    //done();
   });
 });
 
@@ -46,13 +44,13 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-    it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', () => {
-        Controlador.ProcessaAcao('q');
+    it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+        await Controlador.ProcessaAcao('q');
     })
 });
 
 describe('Manipulador de cota', () => {
-  it.only('Ao verificar se é melhor vender, deve calcular se o mercado esta em queda ou subindo e analisar a tendencia', () => {
+  it('Ao verificar se é melhor vender, deve calcular se o mercado esta em queda ou subindo e analisar a tendencia', async () => {
     
     var cota = new Cota('LUX', 13990, 1);
     cota.UltimoPreco = 13500;

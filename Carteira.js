@@ -28,7 +28,7 @@ async function EmitirOrdemVenda(cota)
   };
   var result = await CTPClient.APIQUERY('SubmitTrade', params);
 
-  console.log(result.Success + ' ' + result.Error);
+  console.log('Ordem de venda: ' + result.OrderID);
 }
 
 exports.MinhaCarteira = MinhaCarteira;
