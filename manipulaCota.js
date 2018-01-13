@@ -3,6 +3,7 @@ var Cota = require('./cota.js');
 var Bitcoin = require('./Bitcoin.js');
 var CTPClient = require('./coreCTPClient.js');
 var Estrategia = require('./Estrategia.js');
+var Carteira = require('./Carteira.js');
 
 var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
 var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
@@ -15,6 +16,12 @@ async function LeCotas()
 
   var cotas = await fs.readFile('./cotas.txt', 'utf8');
   cotas = cotas != undefined && cotas != '' ? JSON.parse(cotas) : [];
+
+  for(let [index,cota] of cotas.entries())
+  {
+    cota = Object.assign( new Cota(), cota);
+    cotas[index] = cota;
+  }
 
   return cotas;
 }
@@ -118,6 +125,7 @@ async function processaCotas(cotas)
 
   ImprimirValorBTC();
   GravaCota(cotas);
+  Carteira.CalcularTotal(cotas);
 }
 
 function ImprimirValorBTC()

@@ -6,11 +6,11 @@ class Cota
   {
     this.Nome = nome;
     this.Label = nome + '/BTC';
-    this.ValorCompra = valor;
-    this.Quantidade = quantidade;
+    this.ValorCompra = new Number(valor);
+    this.Quantidade = new Number(quantidade);
     this.MaiorPreco = 0;
     // privada
-    var ultimoPreco;
+    var ultimoPreco = new Number();
   }
 
   get UltimoPreco(){

@@ -1,5 +1,7 @@
 var CTPClient = require('./coreCTPClient.js');
 var Cota = require('./cota.js');
+var Bitcoin = require('./Bitcoin.js');
+
 
 var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
 var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
@@ -27,5 +29,19 @@ async function EmitirOrdemVenda(cota)
   console.log('Ordem de venda: ' + result.OrderID);
 }
 
+async function CalcularTotal(cotas) {
+  var total = 0;
+  
+  cotas.forEach((cota) => {
+    if(cota.Nome === 'BTC')
+      total += + cota.Quantidade;
+    else
+      total += cota.Quantidade * cota.UltimoPreco 
+  } );
+
+  console.log('Total: $' + total * await Bitcoin.PrecoBTC());
+}
+
+exports.CalcularTotal = CalcularTotal;
 exports.MinhaCarteira = MinhaCarteira;
 exports.EmitirOrdemVenda = EmitirOrdemVenda;

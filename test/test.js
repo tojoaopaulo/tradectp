@@ -11,6 +11,11 @@ describe('Carteira', ()=> {
   it('Deve imprimir minha carteira na CTP', async() => {
     await Carteira.MinhaCarteira('SKY/BTC');
   });
+
+  it.only('Deve calcular o valor total em USD de acordo com a cotacao atual', async() => {
+    var cotas = await manipulaCota.LeCotas();
+    await Carteira.CalcularTotal();
+  });
 /*
   it('Deve criar uma ordem com sucesso', async() => {
     await Carteira.EmitirOrdemVenda({ 'Label': 'SKY/BTC' });
@@ -44,7 +49,7 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-    it.only('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+    it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
         await Controlador.ProcessaAcao('q');
     })
 });
