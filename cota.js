@@ -2,7 +2,7 @@
 
 class Cota
 {
-  constructor (nome, valor, quantidade)
+  constructor (nome, valor, quantidade = 0)
   {
     this.Nome = nome;
     this.Label = nome + '/BTC';

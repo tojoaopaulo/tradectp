@@ -94,7 +94,8 @@ async function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
 
 async function processaCotas(cotas)
 {
-  var cotacoes = await CTPClient.BuscarMercados('BTC');
+  //var cotacoes = await CTPClient.BuscarMercados('BTC');
+  var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
 
   for(let c of cotas)
   {
@@ -108,7 +109,7 @@ async function processaCotas(cotas)
         return item.Label == c.Label;
       })[0];
   
-       c.UltimoPreco = itemCota.LastPrice; 
+      c.UltimoPreco = itemCota.UltimoPreco;
     }
     await imprimir(c);
     //cotas[index] = c;
@@ -127,7 +128,7 @@ async function imprimir(cota)
 {
   var valor = Math.round(cota.VariacaoPercentualPreco() * 100) / 100;
 
-  console.log(cota.Nome + ' ' + valor * 100 + '%   '  + cota.VariacaoMaiorPreco() +'%         ' + JSON.stringify(cota));
+  console.log(cota.Nome + ' ' + valor * 100 + '%   '  + cota.VariacaoMaiorPreco() +'%         ' + cota.UltimoPreco + '|' + cota.ValorCompra + '|' + cota.MaiorPreco );
 
   await imprimirLiquidacoes(cota);
 

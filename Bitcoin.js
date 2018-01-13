@@ -13,10 +13,10 @@ module.exports.PrecoBTC = async function PrecoBTC()
     var result = await CTPClient.BuscarMercados('USDT');
 
     var BTCUSDT = result.filter(function (item) {
-      return item.Label == 'BTC/USDT';
+      return item.Nome == 'BTC';
     })[0];
     
-    precoBTC = BTCUSDT.LastPrice;
+    precoBTC = BTCUSDT.UltimoPreco;
     console.log('Valor BTC Atualizado');
   }
   

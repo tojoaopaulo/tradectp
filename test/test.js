@@ -44,7 +44,7 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-    it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+    it.only('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
         await Controlador.ProcessaAcao('q');
     })
 });

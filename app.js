@@ -1,46 +1,44 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'; 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 var Carteira = require('./Carteira.js');
 var manipulaCota = require('./manipulaCota.js');
 var Estrategia = require('./Estrategia.js');
 var inquirer = require('inquirer');
 
-if(process.argv[2] !== undefined)
+if (process.argv[2] !== undefined)
   ProcessaAcao(process.argv[2]);
 else
   ControlaFluxo();
 
-async function ProcessaAcao(acao)
-{
-  switch(acao)
-  {
-  case 'q':
+async function ProcessaAcao(acao) {
   try {
-    manipulaCota.processaCotas(await manipulaCota.LeCotas());    
-  } catch (error) {
-    console.log(error)
+    switch (acao) {
+      case 'q':
+        manipulaCota.processaCotas(await manipulaCota.LeCotas());
+        break;
+      case 'c':
+        manipulaCota.cadastrarCotas(await manipulaCota.LeCotas());
+        break;
+      case 'r':
+        manipulaCota.removerCotas(await manipulaCota.LeCotas());
+        break;
+      case 'i':
+        Estrategia.AnalisarHistoricoMercado('SKY_BTC', 1);
+        break;
+      case 'm':
+        Carteira.MinhaCarteira();
+        break;
+      case 'v':
+        Carteira.EmitirOrdemVenda({ Label: 'SKY/BTC' });
+        break;
+    }
   }
-    break;
-  case 'c':
-    manipulaCota.cadastrarCotas(await manipulaCota.LeCotas());
-    break;
-  case 'r':
-    manipulaCota.removerCotas(await manipulaCota.LeCotas()); 
-    break;
-  case 'i':
-    Estrategia.AnalisarHistoricoMercado('SKY_BTC',1);
-    break;
-  case 'm':
-    Carteira.MinhaCarteira();
-    break;
-  case 'v':
-    Carteira.EmitirOrdemVenda({Label: 'SKY/BTC'});
-    break;
+  catch (error) {
+    console.log(error)
   }
 }
 
-function ControlaFluxo()
-{
+function ControlaFluxo() {
   var questions = [
     {
       type: 'input',

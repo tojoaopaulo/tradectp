@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 const axios = require("axios");
 var fs = require('fs');
+var Cota = require('./cota.js');
 
 API_KEY='';
 API_SECRET='';
@@ -67,7 +68,21 @@ module.exports.BuscarUltimasOrdensEfetivadas = async function BuscarUltimasOrden
 }
 
 module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
-  return await apiQuery('GetMarkets', [Mercado]);
+
+  var cotasCTP = await apiQuery('GetMarkets', [Mercado]);
+
+  var cotas = [];
+  for(let cotaCTP of cotasCTP)
+  {
+    var nome = cotaCTP.Label.split('/')[0];
+    var cota = new Cota(nome, cotaCTP.LastPrice);
+    cota.UltimoPreco = cotaCTP.LastPrice;
+    cota.Label = cotaCTP.Label;
+    
+    cotas.push(cota);
+  }
+
+  return cotas;
 }
 
 module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, quantidade ) {
@@ -84,6 +99,28 @@ module.exports.ConsultarCarteira = async function ConsultarCarteira() {
   return await apiQuery('GetBalance');
 }
 
+module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400)
+{
+  var uri = 'https://api.coinmarketcap.com/v1/ticker/?limit='+quantidade;
+	
+  try {
+    axios.proxy = {
+      host: '127.0.0.1',
+      port: 8888,
+    };
+    const resp = await axios.get(uri);
+
+    var cotas = [];
+    for(let cotaResp of resp.data)
+    {
+      var cota = new Cota(cotaResp.symbol, cotaResp.price_btc);
+      cota.UltimoPreco = cotaResp.price_btc;
+      cotas.push(cota);
+    }
+
+    return cotas;
+  } catch (error) { console.log(error.message); }
+}
 
 /*
 async.series([
