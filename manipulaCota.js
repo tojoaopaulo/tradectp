@@ -80,9 +80,10 @@ function LeQlqrMerda(cotas)
 function GravaCota(cotas)
 {
   const fs = require('fs');
-
-  fs.writeFile('cotas.txt', JSON.stringify(cotas), (err) => {
+  var JSONCotas = JSON.stringify(cotas);
+  fs.writeFile('cotas.txt', JSONCotas, (err) => {
     if(err) throw err;
+    //console.log(JSONCotas);
   });
 }
 
@@ -94,25 +95,25 @@ async function ConverterCotaBTCXUSD(nome, qtdBTC = 1){
 
 async function processaCotas(cotas)
 {
-  //var cotacoes = await CTPClient.BuscarMercados('BTC');
-  var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
+  var cotacoes = await CTPClient.BuscarMercados('BTC');
+  //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
 
-  for(let c of cotas)
+  for(let [index,cota] of cotas.entries())
   {
-    c = Object.assign( new Cota(), c);
+    cota = Object.assign( new Cota(), cota);
 
-    if(c.Nome == 'BTC')
-      c.UltimoPreco = await Bitcoin.PrecoBTC();
+    if(cota.Nome == 'BTC')
+      cota.UltimoPreco = await Bitcoin.PrecoBTC();
     else
     {         
       var itemCota = cotacoes.filter(function (item) {
-        return item.Label == c.Label;
+        return item.Label == cota.Label;
       })[0];
   
-      c.UltimoPreco = itemCota.UltimoPreco;
+      cota.UltimoPreco = itemCota.UltimoPreco;
     }
-    await imprimir(c);
-    //cotas[index] = c;
+    await imprimir(cota);
+    cotas[index] = cota;
   }
 
   ImprimirValorBTC();
