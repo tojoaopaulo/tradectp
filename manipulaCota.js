@@ -131,9 +131,8 @@ async function imprimir(cota)
 
   console.log(cota.Nome + ' ' + valor * 100 + '%   '  + cota.VariacaoMaiorPreco() +'%         ' + cota.UltimoPreco + '|' + cota.ValorCompra + '|' + cota.MaiorPreco );
 
-  await imprimirLiquidacoes(cota);
-
   await ConverterCotaBTCXUSD(cota.Nome,cota.QuantidadeBTC());
+  await imprimirLiquidacoes(cota);
 }
 
 async function imprimirLiquidacoes(cota){
