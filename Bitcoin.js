@@ -3,12 +3,10 @@ var CTPClient = require('./coreCTPClient.js');
 var precoBTC = 0;
 var ultimaConsulta = new Date();
 
-module.exports.PrecoBTC = async function PrecoBTC()
-{
+module.exports.PrecoBTC = async function PrecoBTC() {
   var agora = new Date();
-  var atualizaPorTempo =  new Date(agora - ultimaConsulta).getMinutes() >= 1;
-  if(!precoBTC > 0 || atualizaPorTempo)
-  {
+  var atualizaPorTempo = new Date(agora - ultimaConsulta).getMinutes() >= 1;
+  if (!precoBTC > 0 || atualizaPorTempo) {
     ultimaConsulta = agora;
     //var result = await CTPClient.BuscarMercados('USDT');
     var cota = await CTPClient.BuscarMoedaEspecifica('BITCOIN');
@@ -22,6 +20,6 @@ module.exports.PrecoBTC = async function PrecoBTC()
     precoBTC = cota.UltimoPreco;
     console.log('Valor BTC Atualizado');
   }
-  
+
   return precoBTC;
 }

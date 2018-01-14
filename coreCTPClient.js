@@ -3,55 +3,53 @@ const axios = require("axios");
 var fs = require('fs');
 var Cota = require('./cota.js');
 
-API_KEY='';
-API_SECRET='';
+API_KEY = '';
+API_SECRET = '';
 
-function CarregarKeys()
-{
-  var keys = JSON.parse(fs.readFileSync('config','utf8'));
+function CarregarKeys() {
+  var keys = JSON.parse(fs.readFileSync('config', 'utf8'));
   API_KEY = keys.API_KEY;
-  API_SECRET = keys.API_SECRET;  
+  API_SECRET = keys.API_SECRET;
 }
 
-async function apiQuery(method, params ) {
+async function apiQuery(method, params) {
   CarregarKeys();
 
-	if ( ! params ) params = {};
-	
-  var public_set = [ 'GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders' ];
-  var private_set = [ 'GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip' ];
+  if (!params) params = {};
+
+  var public_set = ['GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders'];
+  var private_set = ['GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip'];
   var host_name = 'https://www.cryptopia.co.nz';
 
-	var uri = '/Api/' + method + '/';
-	
-  if ( public_set.indexOf( method ) > -1 ) {
+  var uri = '/Api/' + method + '/';
 
-    if ( params ) uri += params.join('/');
+  if (public_set.indexOf(method) > -1) {
+
+    if (params) uri += params.join('/');
 
     try {
-      var url = host_name+uri;
+      var url = host_name + uri;
       const resp = await axios.get(url);
       return resp.data.Data;
     } catch (error) {
       console.log(error.message);
     }
-		
-  } 
-  else if (  private_set.indexOf( method ) > -1 )
-  {
+
+  }
+  else if (private_set.indexOf(method) > -1) {
     var nonce = Math.floor(new Date().getTime() / 1000);
-    var md5 = crypto.createHash('md5').update( JSON.stringify( params ) ).digest();
+    var md5 = crypto.createHash('md5').update(JSON.stringify(params)).digest();
     var requestContentBase64String = md5.toString('base64');
-		var signature = API_KEY + 'POST' + encodeURIComponent( host_name + uri ).toLowerCase() + nonce + requestContentBase64String;
-		
-		var hmacsignature = crypto.createHmac('sha256', new Buffer( API_SECRET, 'base64' ) ).update( signature ).digest().toString('base64');
-		
+    var signature = API_KEY + 'POST' + encodeURIComponent(host_name + uri).toLowerCase() + nonce + requestContentBase64String;
+
+    var hmacsignature = crypto.createHmac('sha256', new Buffer(API_SECRET, 'base64')).update(signature).digest().toString('base64');
+
     var header_value = 'amx ' + API_KEY + ':' + hmacsignature + ':' + nonce;
-		var headers = { 'Authorization': header_value, 'Content-Type':'application/json; charset=utf-8' };
-		
+    var headers = { 'Authorization': header_value, 'Content-Type': 'application/json; charset=utf-8' };
+
     try {
-      var url = host_name+uri;
-      const resp = await axios.post(url,params, { headers: headers });
+      var url = host_name + uri;
+      const resp = await axios.post(url, params, { headers: headers });
 
       return resp.data.Data;
     } catch (error) {
@@ -62,9 +60,9 @@ async function apiQuery(method, params ) {
 
 module.exports.BuscarUltimasOrdensEfetivadas = async function BuscarUltimasOrdensEfetivadas(Label, Tempo) {
   //var param = ['BTC_USD','1']; 
-  var LblAnalise = Label.replace('/','_');
-  var param = [LblAnalise,Tempo];
-  return await apiQuery('GetMarketHistory', param);  
+  var LblAnalise = Label.replace('/', '_');
+  var param = [LblAnalise, Tempo];
+  return await apiQuery('GetMarketHistory', param);
 }
 
 module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
@@ -72,20 +70,19 @@ module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
   var cotasCTP = await apiQuery('GetMarkets', [Mercado]);
 
   var cotas = [];
-  for(let cotaCTP of cotasCTP)
-  {
+  for (let cotaCTP of cotasCTP) {
     var nome = cotaCTP.Label.split('/')[0];
     var cota = new Cota(nome, cotaCTP.LastPrice);
     cota.UltimoPreco = cotaCTP.LastPrice;
     cota.Label = cotaCTP.Label;
-    
+
     cotas.push(cota);
   }
 
   return cotas;
 }
 
-module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, quantidade ) {
+module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, quantidade) {
   var params = {
     Market: label,
     Type: 'Sell',
@@ -99,16 +96,14 @@ module.exports.ConsultarCarteira = async function ConsultarCarteira() {
   return await apiQuery('GetBalance');
 }
 
-module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400)
-{
-  var uri = 'https://api.coinmarketcap.com/v1/ticker/?limit='+quantidade;
-	
+module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400) {
+  var uri = 'https://api.coinmarketcap.com/v1/ticker/?limit=' + quantidade;
+
   try {
     const resp = await axios.get(uri);
 
     var cotas = [];
-    for(let cotaResp of resp.data)
-    {
+    for (let cotaResp of resp.data) {
       var cota = new Cota(cotaResp.symbol, cotaResp.price_btc);
       cota.UltimoPreco = cotaResp.price_btc;
       cotas.push(cota);
@@ -118,10 +113,9 @@ module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400
   } catch (error) { console.log(error.message); }
 }
 
-module.exports.BuscarMoedaEspecifica = async function (label)
-{
+module.exports.BuscarMoedaEspecifica = async function (label) {
   var uri = 'https://api.coinmarketcap.com/v1/ticker/' + label;
-	
+
   try {
     const resp = await axios.get(uri);
 

@@ -5,20 +5,20 @@ var Cota = require('../Cota.js');
 var Controlador = require('../app.js');
 var manipulaCota = require('../manipulaCota.js');
 
-describe('Carteira', ()=> {
-  it('Deve imprimir minha carteira na CTP', async() => {
+describe('Carteira', () => {
+  it('Deve imprimir minha carteira na CTP', async () => {
     await Carteira.MinhaCarteira('SKY/BTC');
   });
 
-  it('Deve calcular o valor total em USD de acordo com a cotacao atual', async() => {
+  it('Deve calcular o valor total em USD de acordo com a cotacao atual', async () => {
     var cotas = await manipulaCota.LeCotas();
     await Carteira.CalcularTotal();
   });
-/*
-  it('Deve criar uma ordem com sucesso', async() => {
-    await Carteira.EmitirOrdemVenda({ 'Label': 'SKY/BTC' });
-  });
-*/
+  /*
+    it('Deve criar uma ordem com sucesso', async() => {
+      await Carteira.EmitirOrdemVenda({ 'Label': 'SKY/BTC' });
+    });
+  */
 });
 
 describe('Bitcoin', () => {
@@ -39,7 +39,7 @@ describe('Cota', () => {
 
     var cota = JSON.parse(json);
 
-    cota = Object.assign( new Cota(), cota);
+    cota = Object.assign(new Cota(), cota);
 
     cota.UltimoPreco = 10;
     assert.equal(cota.MaiorPreco, cota.UltimoPreco);
@@ -47,14 +47,14 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-    it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
-        await Controlador.ProcessaAcao('q');
-    })
+  it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+    await Controlador.ProcessaAcao('q');
+  })
 });
 
 describe('Manipulador de cota', () => {
   it('Ao verificar se é melhor vender, deve calcular se o mercado esta em queda ou subindo e analisar a tendencia', async () => {
-    
+
     var cota = new Cota('LUX', 13990, 1);
     cota.UltimoPreco = 13500;
     cota.MaiorPreco = 15000;
