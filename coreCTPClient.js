@@ -123,6 +123,8 @@ module.exports.BuscarMoedaEspecifica = async function (label) {
     cota.Nome = resp.data[0].symbol;
     cota.UltimoPreco = label === 'BITCOIN' ? resp.data[0].price_usd : resp.data[0].price_btc;
 
+    cota.Variacao24h = resp.data[0].percent_change_24h;
+
     return cota;
   } catch (error) { console.log(error.message); }
 }

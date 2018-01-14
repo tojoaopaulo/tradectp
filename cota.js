@@ -9,6 +9,8 @@ class Cota {
     this.MaiorPreco = 0;
     // privada
     var ultimoPreco;
+
+    var Variacao24h = null;
   }
 
   get UltimoPreco() {

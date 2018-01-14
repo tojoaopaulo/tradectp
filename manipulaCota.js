@@ -118,8 +118,9 @@ async function processaCotas(cotas) {
   Carteira.CalcularTotal(cotas);
 }
 
-function ImprimirValorBTC() {
-  ConverterCotaBTCXUSD('BTC');
+async function ImprimirValorBTC() {
+  var cotacao = await Bitcoin.ConsultarCotacaoBTC();
+  console.log(cotacao.Nome + ': ' + cotacao.UltimoPreco + '  %24h: ' + cotacao.Variacao24h);
 }
 
 async function imprimir(cota) {
