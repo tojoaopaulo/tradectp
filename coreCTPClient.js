@@ -104,10 +104,6 @@ module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400
   var uri = 'https://api.coinmarketcap.com/v1/ticker/?limit='+quantidade;
 	
   try {
-    axios.proxy = {
-      host: '127.0.0.1',
-      port: 8888,
-    };
     const resp = await axios.get(uri);
 
     var cotas = [];
@@ -122,6 +118,20 @@ module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400
   } catch (error) { console.log(error.message); }
 }
 
+module.exports.BuscarMoedaEspecifica = async function (label)
+{
+  var uri = 'https://api.coinmarketcap.com/v1/ticker/' + label;
+	
+  try {
+    const resp = await axios.get(uri);
+
+    var cota = new Cota();
+    cota.Nome = resp.data[0].symbol;
+    cota.UltimoPreco = label === 'BITCOIN' ? resp.data[0].price_usd : resp.data[0].price_btc;
+
+    return cota;
+  } catch (error) { console.log(error.message); }
+}
 /*
 async.series([
 	function(callback) {

@@ -10,7 +10,7 @@ class Cota
     this.Quantidade = new Number(quantidade);
     this.MaiorPreco = 0;
     // privada
-    var ultimoPreco = new Number();
+    var ultimoPreco;
   }
 
   get UltimoPreco(){

@@ -5,14 +5,12 @@ var Cota = require('../Cota.js');
 var Controlador = require('../app.js');
 var manipulaCota = require('../manipulaCota.js');
 
-
-
 describe('Carteira', ()=> {
   it('Deve imprimir minha carteira na CTP', async() => {
     await Carteira.MinhaCarteira('SKY/BTC');
   });
 
-  it.only('Deve calcular o valor total em USD de acordo com a cotacao atual', async() => {
+  it('Deve calcular o valor total em USD de acordo com a cotacao atual', async() => {
     var cotas = await manipulaCota.LeCotas();
     await Carteira.CalcularTotal();
   });
@@ -24,7 +22,7 @@ describe('Carteira', ()=> {
 });
 
 describe('Bitcoin', () => {
-  it('Deve retornar o valor do bitcoin', async () => {
+  it.only('Deve retornar o valor do bitcoin', async () => {
     assert.ok(await Bitcoin.PrecoBTC() > 0);
   });
 });
