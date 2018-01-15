@@ -115,7 +115,12 @@ async function processaCotas(cotas) {
 
   ImprimirValorBTC();
   GravaCota(cotas);
-  Carteira.CalcularTotal(cotas);
+  await Carteira.CalcularTotal(cotas);
+  
+  setTimeout(function(){
+    processaCotas(cotas);
+  }, 10000);
+
 }
 
 async function ImprimirValorBTC() {
