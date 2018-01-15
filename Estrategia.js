@@ -30,6 +30,8 @@ async function AnalisarHistoricoMercado(Label, Tempo = 1) {
 
   var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label, Tempo);
 
+  //CTPClient.CancelarTodasOrdens();
+
   if (result != null)
     return await CalculaTendenciaPorOrdens(result);
   else

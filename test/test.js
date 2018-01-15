@@ -5,6 +5,7 @@ var Cota = require('../Cota.js');
 var Estrategia = require('../Estrategia.js');
 var Controlador = require('../app.js');
 var manipulaCota = require('../manipulaCota.js');
+var CTPClient = require('../coreCTPClient.js');
 
 describe('Carteira', () => {
   it('Deve imprimir minha carteira na CTP', async () => {
@@ -65,12 +66,20 @@ describe('Manipulador de cota', () => {
   })
 });
 
-describe.only('Estrategia', () => {
+describe('Estrategia', () => {
     it('Calcula o melhor valor de venda para BTC deve criar uma ordem de venda no segundo menor valor existente', async() => {
         var cota = new Cota();
         cota.Label = 'BTC/USDT';
         cota.Quantidade = 1;
 
         Estrategia.GerarMelhorOrdemVenda(cota);
+    })
+})
+
+describe.only('CORE CTP', () => {
+    it('Deve cancelar todas as ordens abertas', async() => {
+        var result = await CTPClient.CancelarTodasOrdens();
+        assert.ok(result.Success);
+        
     })
 })

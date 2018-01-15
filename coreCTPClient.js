@@ -51,7 +51,7 @@ async function apiQuery(method, params) {
       var url = host_name + uri;
       const resp = await axios.post(url, params, { headers: headers });
 
-      return resp.data.Data;
+      return resp.data;
     } catch (error) {
       console.log(error.message);
     }
@@ -100,7 +100,8 @@ module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, qu
 }
 
 module.exports.ConsultarCarteira = async function ConsultarCarteira() {
-  return await apiQuery('GetBalance');
+  var result = await apiQuery('GetBalance');
+  return result.Data;
 }
 
 module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400) {
@@ -135,6 +136,14 @@ module.exports.BuscarMoedaEspecifica = async function (label) {
     return cota;
   } catch (error) { console.log(error.message); }
 }
+
+module.exports.CancelarTodasOrdens = async function (label) {
+    var param = { 'Type':  'All' };
+    return await apiQuery('CancelTrade', param);
+}
+
+
+
 /*
 async.series([
 	function(callback) {
