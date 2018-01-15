@@ -3,7 +3,7 @@
 class Cota {
   constructor(nome, valor, quantidade = 0) {
     this.Nome = nome;
-    this.Label = nome + '/BTC';
+    this.Label = nome === 'BTC' ? 'BTC/USDT' : nome + '/BTC';
     this.ValorCompra = new Number(valor);
     this.Quantidade = new Number(quantidade);
     this.MaiorPreco = 0;

@@ -29,10 +29,7 @@ async function CalcularTotal(cotas) {
   var total = 0;
 
   cotas.forEach((cota) => {
-    if (cota.Nome === 'BTC')
-      total += + cota.Quantidade;
-    else
-      total += cota.Quantidade * cota.UltimoPreco
+    total += + cota.QuantidadeBTC();
   });
 
   console.log('Total: $' + total * await Bitcoin.PrecoBTC());
