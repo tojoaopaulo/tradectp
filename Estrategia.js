@@ -1,4 +1,5 @@
 var CTPClient = require('./coreCTPClient.js');
+var Carteira = require('./Carteira.js');
 
 async function MelhorVender(cota) {
   var periodoTempoParaAnalisar = 1;
@@ -108,19 +109,25 @@ function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar) {
   return tendencia;
 }
 
-async function GerarMelhorOrdemVenda() {
-  // Busca as ultimas ordens
-  var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label);
-  // pega as ordens de venda ordenado decrescente por data
-  // verifica um valor comum das ultimas 5 ordens
-  // cria ordem de venda
+// Gera uma ordem de venda com o valor proximo as ultimas ordens de venda criadas
+async function GerarMelhorOrdemVenda(cota) {
 
-  // ou pega ultimas ordens de venda existentes
-  // ve um valor comum e remove alguns centavos
+  try {
+    var result = await CTPClient.BuscarUltimasOrdensAbertas(cota.Label);
+
+    // TODO: Se a quantidade da primeira ordem for um numero alto, então passar a considerar a primeira ordem
+    var valorVenda = result.Sell[1].Price - 0.00000001;
+    
+    Carteira.EmitirOrdemVenda(cota, valorVenda);
+  }
+  catch (error) {
+    console.log("DEU MERDA FEIA PARA VENDER" + error.message)
+  }
 }
 
 module.exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
 module.exports.MelhorVender = MelhorVender;
+module.exports.GerarMelhorOrdemVenda = GerarMelhorOrdemVenda;
 
 const TendenciaMercado = {
   QUEDA: 'queda',

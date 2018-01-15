@@ -65,6 +65,13 @@ module.exports.BuscarUltimasOrdensEfetivadas = async function BuscarUltimasOrden
   return await apiQuery('GetMarketHistory', param);
 }
 
+module.exports.BuscarUltimasOrdensAbertas = async function BuscarUltimasOrdensAbertas(Label) {
+  //var param = ['BTC_USD','1']; 
+  var LblAnalise = Label.replace('/', '_');
+  var param = [LblAnalise];
+  return await apiQuery('GetMarketOrders', param);
+}
+
 module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
 
   var cotasCTP = await apiQuery('GetMarkets', [Mercado]);

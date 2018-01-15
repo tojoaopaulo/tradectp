@@ -18,11 +18,9 @@ async function MinhaCarteira() {
   //console.log(JSON.stringify(result));
 }
 
-async function EmitirOrdemVenda(cota) {
-  var preco = 11111111;
-  var quantidade = 0.00001;
-
-  var result = await CTPClient.CriarOrdemVenda(cota.Label, preco, quantidade);
+async function EmitirOrdemVenda(cota, valor) {
+  
+  //var result = await CTPClient.CriarOrdemVenda(cota.Label, preco, cota.Quantidade);
 
   console.log('Ordem de venda: ' + result.OrderID);
 }

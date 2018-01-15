@@ -2,6 +2,7 @@ var assert = require('assert');
 var Carteira = require('../Carteira.js');
 var Bitcoin = require('../Bitcoin.js');
 var Cota = require('../Cota.js');
+var Estrategia = require('../Estrategia.js');
 var Controlador = require('../app.js');
 var manipulaCota = require('../manipulaCota.js');
 
@@ -22,7 +23,7 @@ describe('Carteira', () => {
 });
 
 describe('Bitcoin', () => {
-  it.only('Deve retornar o valor do bitcoin', async () => {
+  it('Deve retornar o valor do bitcoin', async () => {
     assert.ok(await Bitcoin.PrecoBTC() > 0);
   });
 });
@@ -63,3 +64,13 @@ describe('Manipulador de cota', () => {
     manipulaCota.imprimirLiquidacoes(cota);
   })
 });
+
+describe.only('Estrategia', () => {
+    it('Calcula o melhor valor de venda para BTC deve criar uma ordem de venda no segundo menor valor existente', async() => {
+        var cota = new Cota();
+        cota.Label = 'BTC/USDT';
+        cota.Quantidade = 1;
+
+        Estrategia.GerarMelhorOrdemVenda(cota);
+    })
+})
