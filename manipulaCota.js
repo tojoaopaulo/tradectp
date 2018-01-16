@@ -119,9 +119,9 @@ async function processaCotas(cotas, continuo = false) {
   
   if(continuo)
   {
-    setTimeout(function(){
+    setTimeout(() => {
       process.stdout.write('\033c');
-      processaCotas(cotas);
+      processaCotas(cotas,continuo);
     }, 60000);
   }
 }
