@@ -118,6 +118,7 @@ async function processaCotas(cotas) {
   await Carteira.CalcularTotal(cotas);
   
   setTimeout(function(){
+    process.stdout.write('\033c');
     processaCotas(cotas);
   }, 10000);
 
