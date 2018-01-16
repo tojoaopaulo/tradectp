@@ -63,7 +63,7 @@ describe('Manipulador de cota', () => {
 
     //manipulaCota.MelhorVender(cota);
     manipulaCota.imprimirLiquidacoes(cota);
-  })
+  });
 });
 
 describe('Estrategia', () => {
@@ -73,10 +73,18 @@ describe('Estrategia', () => {
         cota.Quantidade = 1;
 
         Estrategia.GerarMelhorOrdemVenda(cota);
-    })
-})
+    });
 
-describe.only('CORE CTP', () => {
+    it.only('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
+      var cota = new Cota();
+      cota.Label = 'LUX/BTC';
+      cota.Quantidade = 1;
+
+      Estrategia.MelhorVender(cota);
+  });
+});
+
+describe('CORE CTP', () => {
     it('Deve cancelar todas as ordens abertas', async() => {
         var result = await CTPClient.CancelarTodasOrdens();
         assert.ok(result.Success);

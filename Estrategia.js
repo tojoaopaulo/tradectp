@@ -1,12 +1,22 @@
 var CTPClient = require('./coreCTPClient.js');
 var Carteira = require('./Carteira.js');
+var Bitcoin = require('./Bitcoin.js');
 
 async function MelhorVender(cota) {
   var periodoTempoParaAnalisar = 1;
   var percentualMaximoPerda = -10;
   var vender = false;
 
-  if (cota.EstaEmQueda()) {
+  // BITCOIN % VARIACAO ULTIMAS 24H + 7D OU HORA Q COMPREI BTCS
+
+  var BTC = await Bitcoin.CotacaoBTC();
+
+  if(BTC.Variacao7d < -10 || BTC.Variacao24h < -6 || BTC.Variacao1h < -4)
+  {
+    Bitcoin.tempoAtualizacaoPreco = 1;
+    return true;
+  }
+  else if (cota.EstaEmQueda()) {
     var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
     switch (tendencia) {

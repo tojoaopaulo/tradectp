@@ -93,7 +93,7 @@ async function ConverterCotaBTCXUSD(nome, qtdBTC = 1) {
   console.log(nome + ': ' + valor);
 }
 
-async function processaCotas(cotas) {
+async function processaCotas(cotas, continuo = false) {
   var cotacoes = await CTPClient.BuscarMercados('BTC');
   //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
 
@@ -117,11 +117,13 @@ async function processaCotas(cotas) {
   GravaCota(cotas);
   await Carteira.CalcularTotal(cotas);
   
-  setTimeout(function(){
-    process.stdout.write('\033c');
-    processaCotas(cotas);
-  }, 10000);
-
+  if(continuo)
+  {
+    setTimeout(function(){
+      process.stdout.write('\033c');
+      processaCotas(cotas);
+    }, 60000);
+  }
 }
 
 async function ImprimirValorBTC() {

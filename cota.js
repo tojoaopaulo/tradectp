@@ -10,7 +10,9 @@ class Cota {
     // privada
     var ultimoPreco;
 
-    var Variacao24h = null;
+    var Variacao1h;
+    var Variacao24h;
+    var Variacao7d;
   }
 
   get UltimoPreco() {

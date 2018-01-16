@@ -31,6 +31,10 @@ async function ProcessaAcao(acao) {
       case 'v':
         Carteira.EmitirOrdemVenda({ Label: 'SKY/BTC' });
         break;
+      case 'a':
+        var continuo = true;
+        manipulaCota.processaCotas(await manipulaCota.LeCotas(), continuo);
+        break;
     }
   }
   catch (error) {
