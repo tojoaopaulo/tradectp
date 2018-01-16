@@ -111,7 +111,7 @@ module.exports.ConsultarCarteira = async function ConsultarCarteira() {
     });
 
     for (let cotaResp of cotasResp) {
-      var cota = new Cota(cotaResp.Symbol, 0, cotaResp.Total);
+      var cota = new Cota(cotaResp.Symbol, undefined, cotaResp.Total);
       cota.UltimoPreco = cotaResp.price_btc;
       cotas.push(cota);
     }

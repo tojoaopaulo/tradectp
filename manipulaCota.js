@@ -14,7 +14,7 @@ async function LeCotas() {
   const fs = require('fs-promise');
 
   var cotas = await fs.readFile('./cotas.txt', 'utf8');
-  cotas = cotas != undefined && cotas != '' ? JSON.parse(cotas) : [];
+  cotas = cotas != undefined && cotas != '' && cotas != '{}' ? JSON.parse(cotas) : [];
 
   for (let [index, cota] of cotas.entries()) {
     cota = Object.assign(new Cota(), cota);
@@ -93,24 +93,37 @@ async function ConverterCotaBTCXUSD(nome, qtdBTC = 1) {
   console.log(nome + ': ' + valor);
 }
 
-async function processaCotas(cotas, continuo = false) {
+async function Processar(continuo = false) {
+  cotas = await Carteira.MinhaCarteira();
+
   var cotacoes = await CTPClient.BuscarMercados('BTC');
   //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
 
   for (let [index, cota] of cotas.entries()) {
     cota = Object.assign(new Cota(), cota);
 
-    if (cota.Nome == 'BTC')
-      cota.UltimoPreco = await Bitcoin.PrecoBTC();
-    else {
-      var itemCota = cotacoes.filter(function (item) {
-        return item.Label == cota.Label;
-      })[0];
-
-      cota.UltimoPreco = itemCota.UltimoPreco;
+    switch (cota.Nome) 
+    {
+      case 'USDT':
+        imprimirCota = false;
+        cota.UltimoPreco = cota.Quantidade;  
+        break;
+      case 'BTC':
+        imprimirCota = true;
+        cota.UltimoPreco = await Bitcoin.PrecoBTC();
+        break;
+      default:
+        imprimirCota = true;
+        var itemCota = cotacoes.filter(function (item) {
+          return item.Nome == cota.Nome;
+        })[0];
+        cota.UltimoPreco = itemCota.UltimoPreco;
+        break;
     }
-    await imprimir(cota);
     cotas[index] = cota;
+
+    if(imprimirCota)
+      await imprimir(cota);
   }
 
   ImprimirValorBTC();
@@ -121,13 +134,13 @@ async function processaCotas(cotas, continuo = false) {
   {
     setTimeout(() => {
       process.stdout.write('\033c');
-      processaCotas(cotas,continuo);
+      Processar(continuo);
     }, 60000);
   }
 }
 
 async function ImprimirValorBTC() {
-  var cotacao = await Bitcoin.ConsultarCotacaoBTC();
+  var cotacao = await Bitcoin.CotacaoBTC();
   console.log(cotacao.Nome + ': ' + cotacao.UltimoPreco + '  %24h: ' + cotacao.Variacao24h);
 }
 
@@ -150,5 +163,5 @@ module.exports.ConverterCotaBTCXUSD = ConverterCotaBTCXUSD;
 module.exports.LeCotas = LeCotas;
 module.exports.cadastrarCotas = cadastrarCotas;
 module.exports.GravaCota = GravaCota;
-module.exports.processaCotas = processaCotas;
+module.exports.Processar = Processar;
 module.exports.imprimirLiquidacoes = imprimirLiquidacoes;

@@ -8,7 +8,7 @@ var manipulaCota = require('../manipulaCota.js');
 var CTPClient = require('../coreCTPClient.js');
 
 describe('Carteira', () => {
-  it.only('Deve imprimir minha carteira na CTP', async () => {
+  it('Deve imprimir minha carteira na CTP', async () => {
     await Carteira.MinhaCarteira('SKY/BTC');
   });
 
@@ -21,6 +21,7 @@ describe('Carteira', () => {
       await Carteira.EmitirOrdemVenda({ 'Label': 'SKY/BTC' });
     });
   */
+
 });
 
 describe('Bitcoin', () => {
@@ -49,7 +50,7 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-  it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+  it.only('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
     await Controlador.ProcessaAcao('q');
   })
 });

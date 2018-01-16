@@ -14,7 +14,7 @@ async function ProcessaAcao(acao) {
   try {
     switch (acao) {
       case 'q':
-        manipulaCota.processaCotas(await manipulaCota.LeCotas());
+        manipulaCota.Processar();
         break;
       case 'c':
         manipulaCota.cadastrarCotas(await manipulaCota.LeCotas());
@@ -26,14 +26,15 @@ async function ProcessaAcao(acao) {
         Estrategia.AnalisarHistoricoMercado('SKY_BTC', 1);
         break;
       case 'm':
-        Carteira.MinhaCarteira();
+        manipulaCota.GravaCota(await Carteira.MinhaCarteira());
+        Carteira.ImprimirCarteira();
         break;
       case 'v':
         Carteira.EmitirOrdemVenda({ Label: 'SKY/BTC' });
         break;
       case 'a':
         var continuo = true;
-        manipulaCota.processaCotas(await manipulaCota.LeCotas(), continuo);
+        manipulaCota.Processar(continuo);
         break;
     }
   }

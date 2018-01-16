@@ -1,15 +1,40 @@
 var CTPClient = require('./coreCTPClient.js');
 var Cota = require('./cota.js');
 var Bitcoin = require('./Bitcoin.js');
-
+var manipulaCota = require('./manipulaCota.js');
 
 var public_set = ['GetCurrencies', 'GetTradePairs', 'GetMarkets', 'GetMarket', 'GetMarketHistory', 'GetMarketOrders'];
 var private_set = ['GetBalance', 'GetDepositAddress', 'GetOpenOrders', 'GetTradeHistory', 'GetTransactions', 'SubmitTrade', 'CancelTrade', 'SubmitTip'];
 
-async function MinhaCarteira() {
-  var cotas  = await CTPClient.ConsultarCarteira();
+module.exports.MinhaCarteira = async function MinhaCarteira(){
 
-  cotas.map(c => console.log("Nome: " + c.Nome + " Total: " + c.Quantidade));
+  var cotasSalvas = await manipulaCota.LeCotas();
+
+  //TODO: implementar flag para so tentar atualizar cota se houver alteracao
+  var carteiraOficial = await CTPClient.ConsultarCarteira();
+
+  for (let [index, cota] of carteiraOficial.entries())
+  {
+    var cotaLocal = cotasSalvas.filter(c => c.Nome == cota.Nome );
+
+    // Se ja existir passa a informação do preço
+    if(cotaLocal.length > 0)
+    {
+      cota.UltimoPreco = cotaLocal[0].UltimoPreco;
+      cota.MaiorPreco = cotaLocal[0].MaiorPreco;
+      cota.ValorCompra = cotaLocal[0].ValorCompra;
+    }
+
+    carteiraOficial[index] = cota;
+    //TODO: implementar depois para pegar valor das cotas compradas que não estão na carteira ainda
+  }
+
+  return carteiraOficial;
+}
+
+module.exports.ImprimirCarteira = async function ImprimirCarteira() {
+  var carteira = await this.MinhaCarteira();
+  carteira.map(c => console.log("Nome: " + c.Nome + " Total: " + c.Quantidade));
 }
 
 async function EmitirOrdemVenda(cota, valor) {
@@ -30,5 +55,4 @@ async function CalcularTotal(cotas) {
 }
 
 exports.CalcularTotal = CalcularTotal;
-exports.MinhaCarteira = MinhaCarteira;
 exports.EmitirOrdemVenda = EmitirOrdemVenda;

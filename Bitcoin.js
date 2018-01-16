@@ -25,6 +25,7 @@ module.exports.ConsultarCotacaoBTC = async function ConsultarCotacaoBTC()
 module.exports.PrecoBTC = async function PrecoBTC() {
   var agora = new Date();
   var atualizaPorTempo = new Date(agora - ultimaConsulta).getMinutes() >= tempoAtualizacaoPreco;
+
   if (cotacao.UltimoPreco === undefined || !cotacao.UltimoPreco > 0 || atualizaPorTempo) {
     ultimaConsulta = agora;
     await this.ConsultarCotacaoBTC();
