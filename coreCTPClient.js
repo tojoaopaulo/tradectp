@@ -101,7 +101,22 @@ module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, qu
 
 module.exports.ConsultarCarteira = async function ConsultarCarteira() {
   var result = await apiQuery('GetBalance');
-  return result.Data;
+
+  var cotas = [];
+  
+  if(result.Success)
+  {
+    var cotasResp = result.Data.filter(function (item) {
+      return item.Total > 0;
+    });
+
+    for (let cotaResp of cotasResp) {
+      var cota = new Cota(cotaResp.Symbol, 0, cotaResp.Total);
+      cota.UltimoPreco = cotaResp.price_btc;
+      cotas.push(cota);
+    }
+  } 
+  return cotas;
 }
 
 module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400) {

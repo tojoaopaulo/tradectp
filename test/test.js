@@ -8,7 +8,7 @@ var manipulaCota = require('../manipulaCota.js');
 var CTPClient = require('../coreCTPClient.js');
 
 describe('Carteira', () => {
-  it('Deve imprimir minha carteira na CTP', async () => {
+  it.only('Deve imprimir minha carteira na CTP', async () => {
     await Carteira.MinhaCarteira('SKY/BTC');
   });
 
@@ -75,7 +75,7 @@ describe('Estrategia', () => {
         Estrategia.GerarMelhorOrdemVenda(cota);
     });
 
-    it.only('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
+    it('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
       var cota = new Cota();
       cota.Label = 'LUX/BTC';
       cota.Quantidade = 1;
