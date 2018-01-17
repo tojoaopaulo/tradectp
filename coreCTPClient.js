@@ -102,7 +102,7 @@ module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, qu
   var retorno = -1;
 
   if(result.Success)
-    retorno = result.Date.OrderID;
+    retorno = result.Data.OrderId;
   
   return retorno;
 }
