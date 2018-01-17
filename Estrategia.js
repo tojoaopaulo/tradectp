@@ -138,9 +138,16 @@ async function GerarMelhorOrdemVenda(cota) {
 }
 
 async function ExecutarEstrategia(cota) {
+  // Cancela as ordens em aberto para gerar com valor atualizado
+  await Carteira.CancelarOrdem(cota);
+
   // Por hora so executa a estrategia para BTX
   if(await this.MelhorVender(cota) && cota.Nome == 'BTX')
+  {
+    console.log("CRIANDO ORDEM PARA VENDER " + cota.Nome)
     await this.GerarMelhorOrdemVenda(cota);
+  }
+    
 }
 
 module.exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;

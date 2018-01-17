@@ -39,10 +39,15 @@ module.exports.ImprimirCarteira = async function ImprimirCarteira() {
 
 async function EmitirOrdemVenda(cota, valor) {
   
-  //var result = await CTPClient.CriarOrdemVenda(cota.Label, preco, cota.Quantidade);
+  var result = await CTPClient.CriarOrdemVenda(cota.Label, preco, cota.Quantidade);
 
   console.log('Ordem de venda: ' + result.OrderID);
 }
+
+async function CancelarOrdem(cota) {
+  await CTPClient.CancelarOrdem(cota.TradePairId);
+}
+
 
 async function CalcularTotal(cotas) {
   var total = 0;
