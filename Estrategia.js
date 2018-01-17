@@ -137,12 +137,15 @@ async function GerarMelhorOrdemVenda(cota) {
   }
 }
 
-async function ExecutarEstrategia(cota) {
+module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
+  console.log("ESTRATEGIA " + cota.Nome)
+
   // Cancela as ordens em aberto para gerar com valor atualizado
   await Carteira.CancelarOrdem(cota);
 
   // Por hora so executa a estrategia para BTX
   if(await this.MelhorVender(cota) && cota.Nome == 'BTX')
+  //if(await this.MelhorVender(cota))
   {
     console.log("CRIANDO ORDEM PARA VENDER " + cota.Nome)
     await this.GerarMelhorOrdemVenda(cota);

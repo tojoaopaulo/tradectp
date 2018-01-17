@@ -44,7 +44,7 @@ async function EmitirOrdemVenda(cota, valor) {
   console.log('Ordem de venda: ' + result.OrderID);
 }
 
-async function CancelarOrdem(cota) {
+module.exports.CancelarOrdem = async function CancelarOrdem(cota) {
   await CTPClient.CancelarOrdem(cota.TradePairId);
 }
 

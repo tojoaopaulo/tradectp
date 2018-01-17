@@ -127,6 +127,8 @@ async function Processar(continuo = false) {
 
     if(imprimirCota)
       await imprimir(cota);
+
+    await Estrategia.ExecutarEstrategia(cota);
   }
 
   ImprimirValorBTC();
@@ -153,12 +155,6 @@ async function imprimir(cota) {
   console.log(cota.Nome + ' ' + valor * 100 + '%   ' + cota.VariacaoMaiorPreco() + '%         ' + cota.UltimoPreco + '|' + cota.ValorCompra + '|' + cota.MaiorPreco);
 
   await ConverterCotaBTCXUSD(cota.Nome, cota.QuantidadeBTC());
-  await imprimirLiquidacoes(cota);
-}
-
-async function imprimirLiquidacoes(cota) {
-  if (await Estrategia.MelhorVender(cota))
-    console.log('Liquidar ' + cota.Nome);
 }
 
 module.exports.removerCotas = removerCotas;
@@ -167,4 +163,3 @@ module.exports.LeCotas = LeCotas;
 module.exports.cadastrarCotas = cadastrarCotas;
 module.exports.GravaCota = GravaCota;
 module.exports.Processar = Processar;
-module.exports.imprimirLiquidacoes = imprimirLiquidacoes;
