@@ -144,7 +144,7 @@ module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
   await Carteira.CancelarOrdem(cota);
 
   // Por hora so executa a estrategia para BTX
-  if(await this.MelhorVender(cota) && cota.Nome == 'BTX')
+  if(await this.MelhorVender(cota))
   //if(await this.MelhorVender(cota))
   {
     console.log("CRIANDO ORDEM PARA VENDER " + cota.Nome)

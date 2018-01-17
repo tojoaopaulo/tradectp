@@ -96,7 +96,15 @@ module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, qu
     Rate: preco,
     Amount: quantidade
   };
-  return await apiQuery('SubmitTrade', params);
+
+  var result = await apiQuery('SubmitTrade', params);
+
+  var retorno = -1;
+
+  if(result.Success)
+    retorno = result.Date.OrderID;
+  
+  return retorno;
 }
 
 module.exports.ConsultarCarteira = async function ConsultarCarteira() {
