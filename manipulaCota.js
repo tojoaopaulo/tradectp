@@ -99,9 +99,8 @@ async function Processar(continuo = false) {
   var cotacoes = await CTPClient.BuscarMercados('BTC');
   //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
 
-  var imprimirCota = true;
-
   for (let [index, cota] of cotas.entries()) {
+    var imprimirCota = true;
     switch (cota.Nome) 
     {
       case 'USDT':

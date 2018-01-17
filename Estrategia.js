@@ -130,7 +130,7 @@ async function GerarMelhorOrdemVenda(cota) {
     // TODO: Se a quantidade da primeira ordem for um numero alto, então passar a considerar a primeira ordem
     var valorVenda = result.Sell[1].Price - 0.00000001;
     
-    await Carteira.EmitirOrdemVenda(cota, valorVenda);
+    //await Carteira.EmitirOrdemVenda(cota, valorVenda);
   }
   catch (error) {
     console.log("DEU MERDA FEIA PARA VENDER" + error.message)
@@ -138,6 +138,10 @@ async function GerarMelhorOrdemVenda(cota) {
 }
 
 module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
+
+  if(IGNORARQUEDABTC)
+    console.log("IGNORANDO QUEDA DO BTC ");
+
   console.log("ESTRATEGIA " + cota.Nome)
 
   // Cancela as ordens em aberto para gerar com valor atualizado
