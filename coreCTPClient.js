@@ -82,7 +82,7 @@ module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
     var cota = new Cota(nome, cotaCTP.LastPrice);
     cota.UltimoPreco = cotaCTP.LastPrice;
     cota.Label = cotaCTP.Label;
-
+    cota.TradePairId = cotaCTP.TradePairId;
     cotas.push(cota);
   }
 
@@ -154,8 +154,8 @@ module.exports.BuscarMoedaEspecifica = async function (label) {
   } catch (error) { console.log(error.message); }
 }
 
-module.exports.CancelarTodasOrdens = async function (label) {
-    var param = { 'Type':  'All' };
+module.exports.CancelarOrdem = async function (TradePairId) {
+    var param = { 'Type':  'TradePair', 'TradePairId':TradePairId  };
     return await apiQuery('CancelTrade', param);
 }
 

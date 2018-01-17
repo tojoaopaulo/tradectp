@@ -10,6 +10,8 @@ class Cota {
     // privada
     var ultimoPreco;
 
+    var TradePairId;
+
     var Variacao1h;
     var Variacao24h;
     var Variacao7d;

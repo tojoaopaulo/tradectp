@@ -8,18 +8,19 @@ module.exports.tempoAtualizacaoPreco = tempoAtualizacaoPreco;
 
 module.exports.ConsultarCotacaoBTC = async function ConsultarCotacaoBTC()
 {
-  //var result = await CTPClient.BuscarMercados('USDT');
   cotacao = await CTPClient.BuscarMoedaEspecifica('BITCOIN');
-  console.log('Valor BTC Atualizado');
-  return cotacao;
 
-  /*
-  var BTCUSDT = result.filter(function (item) {
+  var result = await CTPClient.BuscarMercados('USDT');
+  
+
+  BTCCTP = result.filter(function (item) {
     return item.Nome == 'BTC';
   })[0];
-  */
-  //precoBTC = cota.UltimoPreco;
-  
+
+  cotacao.TradePairId = BTCCTP.TradePairId;
+
+  console.log('Valor BTC Atualizado');
+  return cotacao;  
 }
 
 module.exports.PrecoBTC = async function PrecoBTC() {

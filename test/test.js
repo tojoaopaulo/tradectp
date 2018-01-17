@@ -86,9 +86,8 @@ describe('Estrategia', () => {
 });
 
 describe('CORE CTP', () => {
-    it('Deve cancelar todas as ordens abertas', async() => {
-        var result = await CTPClient.CancelarTodasOrdens();
+    it('Deve cancelar uma ordem em aberto', async() => {
+        var result = await CTPClient.CancelarOrdem(5074); // BTX PAIR
         assert.ok(result.Success);
-        
     })
 })

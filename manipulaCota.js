@@ -99,25 +99,28 @@ async function Processar(continuo = false) {
   var cotacoes = await CTPClient.BuscarMercados('BTC');
   //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
 
-  for (let [index, cota] of cotas.entries()) {
-    cota = Object.assign(new Cota(), cota);
+  var imprimirCota = true;
 
+  for (let [index, cota] of cotas.entries()) {
     switch (cota.Nome) 
     {
       case 'USDT':
         imprimirCota = false;
-        cota.UltimoPreco = cota.Quantidade;  
+        cota.UltimoPreco = cota.Quantidade;
+        var BTC = await Bitcoin.CotacaoBTC();
+        cota.TradePairId = BTC.TradePairId;
         break;
       case 'BTC':
-        imprimirCota = true;
         cota.UltimoPreco = await Bitcoin.PrecoBTC();
+        var BTC = await Bitcoin.CotacaoBTC();
+        cota.TradePairId = BTC.TradePairId;
         break;
       default:
-        imprimirCota = true;
         var itemCota = cotacoes.filter(function (item) {
           return item.Nome == cota.Nome;
         })[0];
         cota.UltimoPreco = itemCota.UltimoPreco;
+        cota.TradePairId = itemCota.TradePairId;
         break;
     }
     cotas[index] = cota;

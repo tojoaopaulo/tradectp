@@ -2,6 +2,8 @@ var CTPClient = require('./coreCTPClient.js');
 var Carteira = require('./Carteira.js');
 var Bitcoin = require('./Bitcoin.js');
 
+var IGNORARQUEDABTC = true;
+
 async function MelhorVender(cota) {
   var periodoTempoParaAnalisar = 1;
   var percentualMaximoPerda = -10;
@@ -11,7 +13,7 @@ async function MelhorVender(cota) {
 
   var BTC = await Bitcoin.CotacaoBTC();
 
-  if(BTC.Variacao7d < -10 || BTC.Variacao24h < -6 || BTC.Variacao1h < -4)
+  if( !IGNORARQUEDABTC && (BTC.Variacao7d < -10 || BTC.Variacao24h < -6 || BTC.Variacao1h < -4))
   {
     Bitcoin.tempoAtualizacaoPreco = 1;
     return true;
@@ -39,8 +41,6 @@ async function MelhorVender(cota) {
 async function AnalisarHistoricoMercado(Label, Tempo = 1) {
 
   var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label, Tempo);
-
-  //CTPClient.CancelarTodasOrdens();
 
   if (result != null)
     return await CalculaTendenciaPorOrdens(result);
@@ -130,11 +130,17 @@ async function GerarMelhorOrdemVenda(cota) {
     // TODO: Se a quantidade da primeira ordem for um numero alto, então passar a considerar a primeira ordem
     var valorVenda = result.Sell[1].Price - 0.00000001;
     
-    Carteira.EmitirOrdemVenda(cota, valorVenda);
+    await Carteira.EmitirOrdemVenda(cota, valorVenda);
   }
   catch (error) {
     console.log("DEU MERDA FEIA PARA VENDER" + error.message)
   }
+}
+
+async function ExecutarEstrategia(cota) {
+  // Por hora so executa a estrategia para BTX
+  if(await this.MelhorVender(cota) && cota.Nome == 'BTX')
+    await this.GerarMelhorOrdemVenda(cota);
 }
 
 module.exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
