@@ -50,7 +50,7 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-  it.only('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+  it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
     await Controlador.ProcessaAcao('q');
   })
 });
@@ -76,9 +76,14 @@ describe('Estrategia', () => {
         Estrategia.GerarMelhorOrdemVenda(cota);
     });
 
-    it('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
+    it.only('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
       var cota = new Cota();
-      cota.Label = 'LUX/BTC';
+      cota.Nome = 'BTC';
+      cota.Label = 'BTC/USDT';
+      cota.ValorCompra = 14000;
+      cota.MaiorPreco = 11358.7,
+      cota.UltimoPreco = 10000,
+      cota.TradePairId = 4909;
       cota.Quantidade = 1;
 
       Estrategia.MelhorVender(cota);

@@ -19,6 +19,7 @@ async function MelhorVender(cota) {
     return true;
   }
   else if (cota.EstaEmQueda()) {
+    Bitcoin.tempoAtualizacaoPreco = 3;
     var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
     switch (tendencia) {

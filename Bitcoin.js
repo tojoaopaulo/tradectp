@@ -3,8 +3,9 @@ var Cota = require('./cota.js');
 
 var cotacao = new Cota();
 var ultimaConsulta = new Date();
-var tempoAtualizacaoPreco = 5;
+var tempoAtualizacaoPreco = 3;
 module.exports.tempoAtualizacaoPreco = tempoAtualizacaoPreco;
+var valorMedioCompraBTC = "14000";
 
 module.exports.ConsultarCotacaoBTC = async function ConsultarCotacaoBTC()
 {
@@ -12,12 +13,12 @@ module.exports.ConsultarCotacaoBTC = async function ConsultarCotacaoBTC()
 
   var result = await CTPClient.BuscarMercados('USDT');
   
-
   BTCCTP = result.filter(function (item) {
     return item.Nome == 'BTC';
   })[0];
 
   cotacao.TradePairId = BTCCTP.TradePairId;
+  cotacao.ValorCompra = valorMedioCompraBTC;
 
   console.log('Valor BTC Atualizado');
   return cotacao;  

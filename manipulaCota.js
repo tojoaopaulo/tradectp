@@ -113,6 +113,7 @@ async function Processar(continuo = false) {
         cota.UltimoPreco = await Bitcoin.PrecoBTC();
         var BTC = await Bitcoin.CotacaoBTC();
         cota.TradePairId = BTC.TradePairId;
+        cota.ValorCompra = BTC.ValorCompra;
         break;
       default:
         var itemCota = cotacoes.filter(function (item) {
