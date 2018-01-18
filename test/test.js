@@ -76,18 +76,23 @@ describe('Estrategia', () => {
         Estrategia.GerarMelhorOrdemVenda(cota);
     });
 
-    it.only('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
-      var cota = new Cota();
-      cota.Nome = 'BTC';
-      cota.Label = 'BTC/USDT';
-      cota.ValorCompra = 14000;
-      cota.MaiorPreco = 11358.7,
-      cota.UltimoPreco = 10000,
-      cota.TradePairId = 4909;
-      cota.Quantidade = 1;
+  it('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
+    var cota = new Cota();
+    cota.Nome = 'BTC';
+    cota.Label = 'BTC/USDT';
+    cota.ValorCompra = 14000;
+    cota.MaiorPreco = 11358.7,
+    cota.UltimoPreco = 10000,
+    cota.TradePairId = 4909;
+    cota.Quantidade = 1;
 
-      Estrategia.MelhorVender(cota);
+    Estrategia.MelhorVender(cota);
   });
+
+  it.only('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async() => {
+    Estrategia.SugestaoCompra();
+});
+  
 });
 
 describe('CORE CTP', () => {

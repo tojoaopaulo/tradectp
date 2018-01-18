@@ -11,7 +11,9 @@ class Cota {
     var ultimoPreco;
 
     var TradePairId;
-
+    
+    var Volume;
+    
     var Variacao1h;
     var Variacao24h;
     var Variacao7d;

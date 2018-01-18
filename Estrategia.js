@@ -3,9 +3,10 @@ var Carteira = require('./Carteira.js');
 var Bitcoin = require('./Bitcoin.js');
 
 var IGNORARQUEDABTC = true;
+var periodoTempoParaAnalisar = 1;
 
 async function MelhorVender(cota) {
-  var periodoTempoParaAnalisar = 1;
+  
   var percentualMaximoPerda = -10;
   var vender = false;
 
@@ -167,3 +168,42 @@ const TendenciaMercado = {
   ALTA: 'alta',
   LATERALIZADO: 'lateralizado'
 };
+
+// somente sobre top 5 volume 
+module.exports.SugestaoCompra = async function SugestaoCompra() {
+
+  var todosMercados = await CTPClient.BuscarMercados('BTC');
+  var sugestoes = [];
+
+  // Ordena por volume
+  todosMercados.sort(ComparaPorVolume);
+
+  for(var i = 0; i < todosMercados.length && sugestoes.length < 5; i++)
+  {
+    var cota = todosMercados[i];
+    if(cota.Variacao24h > 0)
+    {
+      var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
+
+      if(tendencia == TendenciaMercado.ALTA)
+      {
+        sugestoes.push(cota);
+
+        console.log(JSON.stringify(cota));
+      }
+    }
+  }
+
+  return sugestoes;
+}
+
+function ComparaPorVolume(a, b) {
+  let comparacao = 0;
+
+  if(a.Volume > b.Volume)
+    comparacao = -1;
+  else if(a.Volume < b.Volume)
+    comparacao = 1;
+
+  return comparacao;
+}

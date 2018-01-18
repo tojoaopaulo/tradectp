@@ -83,6 +83,8 @@ module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
     cota.UltimoPreco = cotaCTP.LastPrice;
     cota.Label = cotaCTP.Label;
     cota.TradePairId = cotaCTP.TradePairId;
+    cota.Volume = cotaCTP.BaseVolume;
+    cota.Variacao24h = cotaCTP.Change;
     cotas.push(cota);
   }
 

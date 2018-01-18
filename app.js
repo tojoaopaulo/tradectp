@@ -36,6 +36,8 @@ async function ProcessaAcao(acao) {
         var continuo = true;
         manipulaCota.Processar(continuo);
         break;
+      case 's':
+        Estrategia.SugestaoCompra();
     }
   }
   catch (error) {
