@@ -18,7 +18,7 @@ async function MelhorVender(cota) {
     Bitcoin.tempoAtualizacaoPreco = 1;
     return true;
   }
-  else if (cota.EstaEmQueda()) {
+  else if (cota.Nome != BTC.Nome && cota.EstaEmQueda()) {
     Bitcoin.tempoAtualizacaoPreco = 3;
     var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
@@ -131,7 +131,7 @@ async function GerarMelhorOrdemVenda(cota) {
     // TODO: Se a quantidade da primeira ordem for um numero alto, então passar a considerar a primeira ordem
     var valorVenda = result.Sell[1].Price - 0.00000001;
     
-    //await Carteira.EmitirOrdemVenda(cota, valorVenda);
+    await Carteira.EmitirOrdemVenda(cota, valorVenda);
   }
   catch (error) {
     console.log("DEU MERDA FEIA PARA VENDER" + error.message)
