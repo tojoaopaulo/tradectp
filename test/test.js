@@ -7,9 +7,22 @@ var Controlador = require('../app.js');
 var manipulaCota = require('../manipulaCota.js');
 var CTPClient = require('../coreCTPClient.js');
 
+function MockCota() {
+  var cota = new Cota();
+    cota.Nome = 'BTC';
+    cota.Label = 'BTC/USDT';
+    cota.ValorCompra = 14000;
+    cota.MaiorPreco = 11358.7,
+    cota.UltimoPreco = 10000,
+    cota.TradePairId = 4909;
+    cota.Quantidade = 1;
+
+  return cota;
+}
+
 describe('Carteira', () => {
-  it('Deve imprimir minha carteira na CTP', async () => {
-    await Carteira.MinhaCarteira('SKY/BTC');
+  it.only('Deve imprimir minha carteira na CTP', async () => {
+    await Carteira.MinhaCarteira();
   });
 
   it('Deve calcular o valor total em USD de acordo com a cotacao atual', async () => {
@@ -21,6 +34,13 @@ describe('Carteira', () => {
       await Carteira.EmitirOrdemVenda({ 'Label': 'SKY/BTC' });
     });
   */
+
+  it('Deve buscar o historico das ultimas trades', async () => {
+    var preco = await Carteira.BuscarPrecoCompra(MockCota());
+
+    assert.ok(typeof preco === 'number');
+  });
+  
 
 });
 
@@ -89,7 +109,7 @@ describe('Estrategia', () => {
     Estrategia.MelhorVender(cota);
   });
 
-  it.only('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async() => {
+  it('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async() => {
     Estrategia.SugestaoCompra();
 });
   

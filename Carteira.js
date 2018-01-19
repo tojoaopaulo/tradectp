@@ -25,11 +25,20 @@ module.exports.MinhaCarteira = async function MinhaCarteira(){
       cota.ValorCompra = cotaLocal[0].ValorCompra;
     }
 
+    cota.ValorCompra = typeof cota.ValorCompra != 'number' ? await this.BuscarPrecoCompra(cota) : cota.ValorCompra;
+
     carteiraOficial[index] = cota;
     //TODO: implementar depois para pegar valor das cotas compradas que não estão na carteira ainda
   }
 
   return carteiraOficial;
+}
+
+module.exports.BuscarPrecoCompra = async function BuscarPrecoCompra(cota) {
+  var historicoTrades = await CTPClient.BuscarHistoricoTrade(cota.Label);
+
+  // Hoje parte da premissa de que ja vem ordenado, logo eh so pegar o primeiro que é o mais recente
+  return historicoTrades[0].ValorCompra;
 }
 
 module.exports.ImprimirCarteira = async function ImprimirCarteira() {

@@ -91,6 +91,68 @@ module.exports.BuscarMercados = async function BuscarMercados(Mercado) {
   return cotas;
 }
 
+module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400) {
+  var uri = 'https://api.coinmarketcap.com/v1/ticker/?limit=' + quantidade;
+
+  try {
+    const resp = await axios.get(uri);
+
+    var cotas = [];
+    for (let cotaResp of resp.data) {
+      var cota = new Cota(cotaResp.symbol, cotaResp.price_btc);
+      cota.UltimoPreco = cotaResp.price_btc;
+      cotas.push(cota);
+    }
+
+    return cotas;
+  } catch (error) { console.log(error.message); }
+}
+
+module.exports.BuscarMoedaEspecifica = async function (label) {
+  var uri = 'https://api.coinmarketcap.com/v1/ticker/' + label;
+
+  try {
+    const resp = await axios.get(uri);
+
+    var cota = new Cota();
+    cota.Nome = resp.data[0].symbol;
+    cota.UltimoPreco = label === 'BITCOIN' ? resp.data[0].price_usd : resp.data[0].price_btc;
+
+    cota.Variacao1h = resp.data[0].percent_change_1h;
+    cota.Variacao24h = resp.data[0].percent_change_24h;
+    cota.Variacao7d = resp.data[0].percent_change_7d;
+
+    return cota;
+  } catch (error) { console.log(error.message); }
+}
+
+module.exports.BuscarHistoricoTrade = async function (label) {
+  var LblAnalise = label.replace('/', '_');
+  
+  var params = {
+    Market: LblAnalise
+  };
+
+  var cotasCTP = await apiQuery('GetTradeHistory', params);
+
+  // Verificar se o resultado vem ordenado desc timestamp
+  
+  // pegar somente as ordens de compra
+  cotasCTP = cotasCTP.Data.filter(c => c.Type == 'Buy' );
+
+  var cotas = [];
+  for (let cotaCTP of cotasCTP) {
+    var cota = new Cota();
+    cota.Nome = cotaCTP.Market.split('/')[0];
+    cota.Label = cotaCTP.Market;
+    cota.ValorCompra = cotaCTP.Rate;
+    cotas.push(cota);
+  }
+
+  return cotas;
+}
+
+
 module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, quantidade) {
   var params = {
     Market: label,
@@ -127,41 +189,6 @@ module.exports.ConsultarCarteira = async function ConsultarCarteira() {
     }
   } 
   return cotas;
-}
-
-module.exports.BuscarMercadosExterno = async function (mercado, quantidade = 400) {
-  var uri = 'https://api.coinmarketcap.com/v1/ticker/?limit=' + quantidade;
-
-  try {
-    const resp = await axios.get(uri);
-
-    var cotas = [];
-    for (let cotaResp of resp.data) {
-      var cota = new Cota(cotaResp.symbol, cotaResp.price_btc);
-      cota.UltimoPreco = cotaResp.price_btc;
-      cotas.push(cota);
-    }
-
-    return cotas;
-  } catch (error) { console.log(error.message); }
-}
-
-module.exports.BuscarMoedaEspecifica = async function (label) {
-  var uri = 'https://api.coinmarketcap.com/v1/ticker/' + label;
-
-  try {
-    const resp = await axios.get(uri);
-
-    var cota = new Cota();
-    cota.Nome = resp.data[0].symbol;
-    cota.UltimoPreco = label === 'BITCOIN' ? resp.data[0].price_usd : resp.data[0].price_btc;
-
-    cota.Variacao1h = resp.data[0].percent_change_1h;
-    cota.Variacao24h = resp.data[0].percent_change_24h;
-    cota.Variacao7d = resp.data[0].percent_change_7d;
-
-    return cota;
-  } catch (error) { console.log(error.message); }
 }
 
 module.exports.CancelarOrdem = async function (TradePairId) {
