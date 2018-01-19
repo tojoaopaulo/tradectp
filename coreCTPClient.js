@@ -37,7 +37,7 @@ async function apiQuery(method, params) {
 
   }
   else if (private_set.indexOf(method) > -1) {
-    var nonce = Math.floor(new Date().getTime() / 1000);
+    var nonce = crypto.randomBytes(20).toString('hex');
     var md5 = crypto.createHash('md5').update(JSON.stringify(params)).digest();
     var requestContentBase64String = md5.toString('base64');
     var signature = API_KEY + 'POST' + encodeURIComponent(host_name + uri).toLowerCase() + nonce + requestContentBase64String;
