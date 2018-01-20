@@ -26,8 +26,15 @@ class Cota {
   set UltimoPreco(value) {
     this.ultimoPreco = value;
 
-    if (typeof this.MaiorPreco != 'number' || this.MaiorPreco === undefined || this.MaiorPreco == '' || value > this.MaiorPreco)
-      this.MaiorPreco = value;
+    if (typeof this.MaiorPreco != 'number')
+    {
+      if(this.ultimoPreco > this.MaiorPreco)
+        this.MaiorPreco = this.ultimoPreco;
+      else
+        this.MaiorPreco = this.ValorCompra;
+    }
+    else if(this.ultimoPreco > this.MaiorPreco)
+      this.MaiorPreco = this.ultimoPreco;
   }
 
   VariacaoDePreco() {
@@ -51,7 +58,7 @@ class Cota {
 
   EstaEmQueda() {
     var jaTeveAlgumGanho = this.MaiorPreco > this.ValorCompra;
-    var quedaAceitavelStopMovel = jaTeveAlgumGanho ? -5 : -8;
+    var quedaAceitavelStopMovel = jaTeveAlgumGanho ? -4 : -7;
 
     return this.VariacaoMaiorPreco() < quedaAceitavelStopMovel;
   }

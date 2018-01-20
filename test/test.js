@@ -21,7 +21,7 @@ function MockCota() {
 }
 
 describe('Carteira', () => {
-  it.only('Deve imprimir minha carteira na CTP', async () => {
+  it('Deve imprimir minha carteira na CTP', async () => {
     await Carteira.MinhaCarteira();
   });
 
@@ -67,6 +67,29 @@ describe('Cota', () => {
     cota.UltimoPreco = 10;
     assert.equal(cota.MaiorPreco, cota.UltimoPreco);
   });
+
+  it('Verifica se um ativo esta em queda', () => {
+    var json = '{"Nome":"DOGE","Label":"DOGE/BTC","ValorCompra":7.2e-7,"Quantidade":5000,"MaiorPreco":7e-7,"ultimoPreco":6.6e-7,"TradePairId":102}';
+
+    var cota = JSON.parse(json);
+
+    cota = Object.assign(new Cota(), cota);
+
+    Nuassert.ok(cota.EstaEmQueda());
+  });
+
+  it.only('Verifica se esta atualizando o maior valor corretamente', () => {
+    var json = '{"Nome":"RKC","Label":"RKC/BTC","ValorCompra":0.00015397,"Quantidade":20.21475591,"MaiorPreco":0.00015657,"ultimoPreco":0.00016102,"TradePairId":5466}';
+
+    var cota = JSON.parse(json);
+
+    cota = Object.assign(new Cota(), cota);
+
+    cota.UltimoPreco = 0.00016102;
+
+    assert.ok(cota.MaiorPreco == cota.UltimoPreco);
+  });
+
 });
 
 describe('Controlador de fluxo', () => {
