@@ -19,24 +19,29 @@ async function MelhorVender(cota) {
     Bitcoin.tempoAtualizacaoPreco = 1;
     return true;
   }
-  else if (cota.Nome != BTC.Nome && cota.EstaEmQueda()) {
-    Bitcoin.tempoAtualizacaoPreco = 3;
-    var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
+  else if (cota.Nome != BTC.Nome)
+  {
+    if (cota.EstaEmQuedaBizarra())
+      vender = true;
+    else if (cota.EstaEmQueda())
+    {
+      Bitcoin.tempoAtualizacaoPreco = 3;
+      var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
-    switch (tendencia) {
-      case TendenciaMercado.QUEDA:
-        vender = true;
-        break;
-      case TendenciaMercado.ALTA:
-        vender = false;
-        break;
-      case TendenciaMercado.LATERALIZADO:
-        if (cota.VariacaoPercentualPreco() < percentualMaximoPerda)
+      switch (tendencia) {
+        case TendenciaMercado.QUEDA:
+          vender = true;
+          break;
+        case TendenciaMercado.ALTA:
           vender = false;
-        break;
-    }
+          break;
+        case TendenciaMercado.LATERALIZADO:
+          if (cota.VariacaoPercentualPreco() < percentualMaximoPerda)
+            vender = false;
+          break;
+      }
+   }
   }
-
   return vender;
 }
 
@@ -181,8 +186,8 @@ module.exports.SugestaoCompra = async function SugestaoCompra() {
   for(var i = 0; i < todosMercados.length && sugestoes.length < 10; i++)
   {
     var cota = todosMercados[i];
-    if(cota.Variacao24h > 0)
-    {
+    //if(cota.Variacao24h > 0)
+    //{
       var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
       if(tendencia == TendenciaMercado.ALTA)
@@ -191,7 +196,7 @@ module.exports.SugestaoCompra = async function SugestaoCompra() {
 
         console.log(JSON.stringify(cota));
       }
-    }
+    //}
   }
 
   return sugestoes;

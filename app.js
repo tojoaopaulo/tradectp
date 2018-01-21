@@ -41,7 +41,9 @@ async function ProcessaAcao(acao) {
     }
   }
   catch (error) {
-    console.log(error)
+    console.log(error);
+
+    
   } 
 }
 

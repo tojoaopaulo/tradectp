@@ -142,7 +142,7 @@ async function Processar(continuo = false) {
       setTimeout(() => {
         process.stdout.write('\033c');
         Processar(continuo);
-      }, 60000);
+      }, 1000);
     }
   } catch (err) {
     setTimeout(() => {

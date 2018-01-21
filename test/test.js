@@ -78,7 +78,7 @@ describe('Cota', () => {
     Nuassert.ok(cota.EstaEmQueda());
   });
 
-  it.only('Verifica se esta atualizando o maior valor corretamente', () => {
+  it('Verifica se esta atualizando o maior valor corretamente', () => {
     var json = '{"Nome":"RKC","Label":"RKC/BTC","ValorCompra":0.00015397,"Quantidade":20.21475591,"MaiorPreco":0.00015657,"ultimoPreco":0.00016102,"TradePairId":5466}';
 
     var cota = JSON.parse(json);
@@ -93,7 +93,7 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-  it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+  it.only('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
     await Controlador.ProcessaAcao('q');
   })
 });

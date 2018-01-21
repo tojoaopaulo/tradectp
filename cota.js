@@ -62,6 +62,11 @@ class Cota {
 
     return this.VariacaoMaiorPreco() < quedaAceitavelStopMovel;
   }
+
+  EstaEmQuedaBizarra() {
+    return this.VariacaoMaiorPreco() <= -10;
+  }
+  
 }
 
 module.exports = Cota;
