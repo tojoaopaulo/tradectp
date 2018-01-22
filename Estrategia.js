@@ -136,11 +136,31 @@ module.exports.GerarMelhorOrdemVenda = async function GerarMelhorOrdemVenda(cota
     // TODO: Se a quantidade da primeira ordem for um numero alto, então passar a considerar a primeira ordem
     var valorVenda = result.Sell[1].Price - 0.00000001;
 
+    // chama um processo em paralelo sem considerar tempo para atualizar a quantidade e verificar se o menor valor mudou
+    //this.GerenciarVenda(cota);
+
     await Carteira.EmitirOrdemVenda(cota, valorVenda);
   }
   catch (error) {
     console.log("DEU MERDA FEIA PARA VENDER" + error.message)
   }
+}
+
+module.exports.GerenciarVenda = async function GerenciarVenda(cota) {
+
+  var cotas = Carteira.MinhaCarteira();
+  cota = cotas.filter(c => c.Nome == cota.Nome );
+
+  if (cota.quantidade > quantidadeMinimaPossivelOperar) {
+    var ultimasOrdens = await CTPClient.BuscarUltimasOrdensAbertas(cota.Label);
+
+    var valorVenda = ultimasOrdens.Sell[0].Price - 0.00000001;
+
+    await Carteira.EmitirOrdemVenda(cota, valorVenda); 
+  }
+  
+  
+
 }
 
 module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
@@ -150,7 +170,7 @@ module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
 
   console.log("ESTRATEGIA " + cota.Nome)
 
-  if (cota.quantidade > quantidadeMinimaPossivelOperar) {
+  if (cota.Quantidade > quantidadeMinimaPossivelOperar) {
     // Cancela as ordens em aberto para gerar com valor atualizado
     await Carteira.CancelarOrdem(cota);
 
