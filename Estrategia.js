@@ -27,7 +27,7 @@ module.exports.MelhorVender = async function MelhorVender(cota) {
     else if (cota.EstaEmQueda())
     {
       Bitcoin.tempoAtualizacaoPreco = 3;
-      var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
+      var tendencia = await this.AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
       switch (tendencia) {
         case TendenciaMercado.QUEDA:
