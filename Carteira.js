@@ -54,6 +54,7 @@ async function EmitirOrdemVenda(cota, valor) {
 }
 
 module.exports.CancelarOrdem = async function CancelarOrdem(cota) {
+  // TODO: SO CANCELAR A VENDA SE A QUANTIDADE RESTANTE FOR MAIOR DO QUE A TX MINIMA DA CORRETORA
   await CTPClient.CancelarOrdem(cota.TradePairId);
 }
 

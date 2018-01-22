@@ -94,54 +94,63 @@ async function ConverterCotaBTCXUSD(nome, qtdBTC = 1) {
 }
 
 async function Processar(continuo = false) {
-  cotas = await Carteira.MinhaCarteira();
 
-  var cotacoes = await CTPClient.BuscarMercados('BTC');
-  //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
+  try {
+    cotas = await Carteira.MinhaCarteira();
 
-  for (let [index, cota] of cotas.entries()) {
-    var imprimirCota = true;
-    switch (cota.Nome) 
-    {
-      case 'USDT':
-        imprimirCota = false;
-        cota.UltimoPreco = cota.Quantidade;
-        var BTC = await Bitcoin.CotacaoBTC();
-        cota.TradePairId = BTC.TradePairId;
-        break;
-      case 'BTC':
-        cota.UltimoPreco = await Bitcoin.PrecoBTC();
-        var BTC = await Bitcoin.CotacaoBTC();
-        cota.TradePairId = BTC.TradePairId;
-        cota.ValorCompra = BTC.ValorCompra;
-        break;
-      default:
-        var itemCota = cotacoes.filter(function (item) {
-          return item.Nome == cota.Nome;
-        })[0];
-        cota.UltimoPreco = itemCota.UltimoPreco;
-        cota.TradePairId = itemCota.TradePairId;
-        break;
-    }
-    cotas[index] = cota;
-
-    if(imprimirCota)
-      await imprimir(cota);
-
-    await Estrategia.ExecutarEstrategia(cota);
-  }
-
-  ImprimirValorBTC();
-  GravaCota(cotas);
-  await Carteira.CalcularTotal(cotas);
+    var cotacoes = await CTPClient.BuscarMercados('BTC');
+    //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
   
-  if(continuo)
-  {
+    for (let [index, cota] of cotas.entries()) {
+      var imprimirCota = true;
+      switch (cota.Nome) 
+      {
+        case 'USDT':
+          imprimirCota = false;
+          cota.UltimoPreco = cota.Quantidade;
+          var BTC = await Bitcoin.CotacaoBTC();
+          cota.TradePairId = BTC.TradePairId;
+          break;
+        case 'BTC':
+          cota.UltimoPreco = await Bitcoin.PrecoBTC();
+          var BTC = await Bitcoin.CotacaoBTC();
+          cota.TradePairId = BTC.TradePairId;
+          cota.ValorCompra = BTC.ValorCompra;
+          break;
+        default:
+          var itemCota = cotacoes.filter(function (item) {
+            return item.Nome == cota.Nome;
+          })[0];
+          cota.UltimoPreco = itemCota.UltimoPreco;
+          cota.TradePairId = itemCota.TradePairId;
+          break;
+      }
+      cotas[index] = cota;
+  
+      if(imprimirCota)
+        await imprimir(cota);
+  
+      await Estrategia.ExecutarEstrategia(cota);
+    }
+  
+    ImprimirValorBTC();
+    GravaCota(cotas);
+    await Carteira.CalcularTotal(cotas);
+    
+    if(continuo)
+    {
+      setTimeout(() => {
+        process.stdout.write('\033c');
+        Processar(continuo);
+      }, 1000);
+    }
+  } catch (err) {
     setTimeout(() => {
       process.stdout.write('\033c');
       Processar(continuo);
     }, 60000);
   }
+
 }
 
 async function ImprimirValorBTC() {
