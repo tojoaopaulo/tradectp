@@ -5,9 +5,10 @@ const AT = require('technicalindicators');
 
 var IGNORARQUEDABTC = true;
 var periodoTempoParaAnalisar = 1;
+var quantidadeMinimaPossivelOperar = 0.0005;
 
 module.exports.MelhorVender = async function MelhorVender(cota) {
-  
+
   var percentualMaximoPerda = -10;
   var vender = false;
 
@@ -15,17 +16,14 @@ module.exports.MelhorVender = async function MelhorVender(cota) {
 
   var BTC = await Bitcoin.CotacaoBTC();
 
-  if( !IGNORARQUEDABTC && (BTC.Variacao7d < -10 || BTC.Variacao24h < -6 || BTC.Variacao1h < -4))
-  {
+  if (!IGNORARQUEDABTC && (BTC.Variacao7d < -10 || BTC.Variacao24h < -6 || BTC.Variacao1h < -4)) {
     Bitcoin.tempoAtualizacaoPreco = 1;
     return true;
   }
-  else if (cota.Nome != BTC.Nome)
-  {
+  else if (cota.Nome != BTC.Nome) {
     if (cota.EstaEmQuedaBizarra())
       vender = true;
-    else if (cota.EstaEmQueda())
-    {
+    else if (cota.EstaEmQueda()) {
       Bitcoin.tempoAtualizacaoPreco = 3;
       var tendencia = await this.AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
@@ -41,7 +39,7 @@ module.exports.MelhorVender = async function MelhorVender(cota) {
             vender = false;
           break;
       }
-   }
+    }
   }
   return vender;
 }
@@ -137,7 +135,7 @@ module.exports.GerarMelhorOrdemVenda = async function GerarMelhorOrdemVenda(cota
 
     // TODO: Se a quantidade da primeira ordem for um numero alto, então passar a considerar a primeira ordem
     var valorVenda = result.Sell[1].Price - 0.00000001;
-    
+
     await Carteira.EmitirOrdemVenda(cota, valorVenda);
   }
   catch (error) {
@@ -147,22 +145,23 @@ module.exports.GerarMelhorOrdemVenda = async function GerarMelhorOrdemVenda(cota
 
 module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
 
-  if(IGNORARQUEDABTC)
+  if (IGNORARQUEDABTC)
     console.log("IGNORANDO QUEDA DO BTC ");
 
   console.log("ESTRATEGIA " + cota.Nome)
 
-  // Cancela as ordens em aberto para gerar com valor atualizado
-  await Carteira.CancelarOrdem(cota);
+  if (cota.quantidade > quantidadeMinimaPossivelOperar) {
+    // Cancela as ordens em aberto para gerar com valor atualizado
+    await Carteira.CancelarOrdem(cota);
 
-  // Por hora so executa a estrategia para BTX
-  if(await this.MelhorVender(cota))
-  //if(await this.MelhorVender(cota))
-  {
-    console.log("CRIANDO ORDEM PARA VENDER " + cota.Nome)
-    await this.GerarMelhorOrdemVenda(cota);
+    // Por hora so executa a estrategia para BTX
+    if (await this.MelhorVender(cota))
+    //if(await this.MelhorVender(cota))
+    {
+      console.log("CRIANDO ORDEM PARA VENDER " + cota.Nome)
+      await this.GerarMelhorOrdemVenda(cota);
+    }
   }
-    
 }
 
 const TendenciaMercado = {
@@ -180,19 +179,17 @@ module.exports.SugestaoCompra = async function SugestaoCompra() {
   // Ordena por volume
   todosMercados.sort(ComparaPorVolume);
 
-  for(var i = 0; i < todosMercados.length && sugestoes.length < 10; i++)
-  {
+  for (var i = 0; i < todosMercados.length && sugestoes.length < 10; i++) {
     var cota = todosMercados[i];
     //if(cota.Variacao24h > 0)
     //{
-      var tendencia = await AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
+    var tendencia = await this.AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
 
-      if(tendencia == TendenciaMercado.ALTA)
-      {
-        sugestoes.push(cota);
+    if (tendencia == TendenciaMercado.ALTA) {
+      sugestoes.push(cota);
 
-        console.log(JSON.stringify(cota));
-      }
+      console.log(JSON.stringify(cota));
+    }
     //}
   }
 
@@ -202,9 +199,9 @@ module.exports.SugestaoCompra = async function SugestaoCompra() {
 function ComparaPorVolume(a, b) {
   let comparacao = 0;
 
-  if(a.Volume > b.Volume)
+  if (a.Volume > b.Volume)
     comparacao = -1;
-  else if(a.Volume < b.Volume)
+  else if (a.Volume < b.Volume)
     comparacao = 1;
 
   return comparacao;
