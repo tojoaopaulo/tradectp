@@ -152,7 +152,6 @@ module.exports.BuscarHistoricoTrade = async function (label) {
   return cotas;
 }
 
-
 module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, quantidade) {
   var params = {
     Market: label,

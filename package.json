@@ -10,7 +10,8 @@
     "async": "^2.6.0",
     "axios": "^0.17.1",
     "fs-promise": "^2.0.3",
-    "inquirer": "^4.0.2"
+    "inquirer": "^4.0.2",
+    "technicalindicators": "^1.0.21"
   },
   "devDependencies": {
     "eslint-config-google": "^0.9.1"

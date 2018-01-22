@@ -1,11 +1,12 @@
 var CTPClient = require('./coreCTPClient.js');
 var Carteira = require('./Carteira.js');
 var Bitcoin = require('./Bitcoin.js');
+const AT = require('technicalindicators');
 
 var IGNORARQUEDABTC = true;
 var periodoTempoParaAnalisar = 1;
 
-async function MelhorVender(cota) {
+module.exports.MelhorVender = async function MelhorVender(cota) {
   
   var percentualMaximoPerda = -10;
   var vender = false;
@@ -40,7 +41,7 @@ async function MelhorVender(cota) {
   return vender;
 }
 
-async function AnalisarHistoricoMercado(Label, Tempo = 1) {
+module.exports.AnalisarHistoricoMercado = async function AnalisarHistoricoMercado(Label, Tempo = 1) {
 
   var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label, Tempo);
 
@@ -124,7 +125,7 @@ function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar) {
 }
 
 // Gera uma ordem de venda com o valor proximo as ultimas ordens de venda criadas
-async function GerarMelhorOrdemVenda(cota) {
+module.exports.GerarMelhorOrdemVenda = async function GerarMelhorOrdemVenda(cota) {
 
   try {
     var result = await CTPClient.BuscarUltimasOrdensAbertas(cota.Label);
@@ -158,10 +159,6 @@ module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
   }
     
 }
-
-module.exports.AnalisarHistoricoMercado = AnalisarHistoricoMercado;
-module.exports.MelhorVender = MelhorVender;
-module.exports.GerarMelhorOrdemVenda = GerarMelhorOrdemVenda;
 
 const TendenciaMercado = {
   QUEDA: 'queda',
@@ -206,4 +203,25 @@ function ComparaPorVolume(a, b) {
     comparacao = 1;
 
   return comparacao;
+}
+
+module.exports.AnalisarTendenciaAtivo = async function AnalisarTendenciaAtivo() {
+
+  var result = await CTPClient.BuscarUltimasOrdensAbertas('LUX');
+
+  var MACDInput = {
+    values: [],
+    fastPeriod: 5,
+    slowPeriod: 8,
+    signalPeriod: 3,
+    SimpleMAOscillator: false,
+    SimpleMASignal: false
+  };
+
+  AT.MACD.calculate();
+
+  if (result != null)
+    return await CalculaTendenciaPorOrdens(result);
+  else
+    console.log("deu ruim ");
 }
