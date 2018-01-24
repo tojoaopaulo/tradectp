@@ -115,13 +115,19 @@ function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar) {
   var proporcaoCxV = compra.length - venda.length;
 
   var tendencia;
+  var meioQtd = parseInt(qtdOrdensAAnalisar/2);
 
-  if (Math.abs(proporcaoCxV) < valorProporcao)
-    tendencia = TendenciaMercado.LATERALIZADO;
-  else if (proporcaoCxV > 0)
-    tendencia = TendenciaMercado.ALTA;
-  else
-    tendencia = TendenciaMercado.QUEDA;
+  try {
+    if (Math.abs(proporcaoCxV) < valorProporcao)
+      tendencia = TendenciaMercado.LATERALIZADO;
+    else if (proporcaoCxV > 0 && amostraOrdens[meioQtd].Price < amostraOrdens[0].Price)
+      tendencia = TendenciaMercado.ALTA;
+    else
+      tendencia = TendenciaMercado.QUEDA;
+
+  } catch (error) {
+    console.log(meioQtd + ' ' + amostraOrdens[0] + ' ' + amostraOrdens.length)
+  }
 
   console.log(tendencia + ' ' + proporcaoCxV);
   return tendencia;

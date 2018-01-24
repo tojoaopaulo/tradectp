@@ -93,7 +93,7 @@ describe('Cota', () => {
 });
 
 describe('Controlador de fluxo', () => {
-  it.only('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
+  it('Ao tentar processar as cotas o sistema deve conseguir realizar todas as operacoes com sucesso', async () => {
     await Controlador.ProcessaAcao('q');
   })
 });
@@ -132,7 +132,7 @@ describe('Estrategia', () => {
     Estrategia.MelhorVender(cota);
   });
 
-  it('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async() => {
+  it.only('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async() => {
     Estrategia.SugestaoCompra();
 });
   
