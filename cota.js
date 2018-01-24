@@ -58,7 +58,8 @@ class Cota {
 
   EstaEmQueda() {
     var jaTeveAlgumGanho = this.MaiorPreco > this.ValorCompra;
-    var quedaAceitavelStopMovel = jaTeveAlgumGanho ? -4 : -7;
+    //var quedaAceitavelStopMovel = jaTeveAlgumGanho ? -4 : -7;
+    var quedaAceitavelStopMovel = -3;
 
     return this.VariacaoMaiorPreco() < quedaAceitavelStopMovel;
   }
