@@ -2,6 +2,7 @@ var CTPClient = require('./coreCTPClient.js');
 var Carteira = require('./Carteira.js');
 var Bitcoin = require('./Bitcoin.js');
 const AT = require('technicalindicators');
+var Cota = require('./Cota.js');
 
 var IGNORARQUEDABTC = true;
 var periodoTempoParaAnalisar = 1;
@@ -253,3 +254,46 @@ module.exports.AnalisarTendenciaAtivo = async function AnalisarTendenciaAtivo() 
   else
     console.log("deu ruim ");
 }
+
+module.exports.Comprar = async function Comprar(Label) {
+  console.log(Label);
+  try {
+    var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
+    var minhaOrdem = await CTPClient.BuscarMinhasOrdensEmAberto(Label);
+
+    var ValorOrdemCompraMaisAlta = livroOrdens.Buy[0].Price;
+
+    var cota = new Cota();
+    cota.Label = Label;
+
+    // ordem existe com valor igual - nao gera ordem
+    if(minhaOrdem != undefined && ValorOrdemCompraMaisAlta == minhaOrdem.Cota.ValorCompra)
+      return;
+
+    // ordem existe com valor diferente - cancela e gera ordem
+    if (minhaOrdem != undefined && ValorOrdemCompraMaisAlta != minhaOrdem.Cota.ValorCompra)
+    {
+      await Carteira.CancelarOrdem(minhaOrdem.Cota);
+      cota.Quantidade = minhaOrdem.Restante;
+    }
+
+    await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
+  }
+  catch (error) {
+    console.log("DEU MERDA PARA COMPRAR" + error.message)
+  }
+}
+
+module.exports.GerarMelhorOrdemCompra = async function GerarMelhorOrdemCompra(cota, ultimoValorCompra) {
+
+  cota.ValorCompra = ultimoValorCompra + 0.00000001;
+
+  if (cota.Quantidade == 0) {
+    var quantidadeParaCadaAtivo = await Carteira.CalcularTotal() / 5;
+    cota.Quantidade = quantidadeParaCadaAtivo / cota.ValorCompra;
+  }
+
+  // gera nova ordem de compra
+  await Carteira.EmitirOrdemCompra(cota);
+}
+

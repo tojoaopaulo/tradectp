@@ -38,6 +38,10 @@ async function ProcessaAcao(acao) {
         break;
       case 's':
         Estrategia.SugestaoCompra();
+        break;
+      case 'b':
+        Estrategia.Comprar(process.argv[3]+'/BTC');
+        break;
     }
   }
   catch (error) {

@@ -12,16 +12,20 @@ var precoBTC = 0;
 
 async function LeCotas() {
   const fs = require('fs-promise');
+  try {
+    var cotas = await fs.readFile('./cotas.txt', 'utf8');
+    cotas = cotas != undefined && cotas != '' && cotas != '{}' ? JSON.parse(cotas) : [];
 
-  var cotas = await fs.readFile('./cotas.txt', 'utf8');
-  cotas = cotas != undefined && cotas != '' && cotas != '{}' ? JSON.parse(cotas) : [];
+    for (let [index, cota] of cotas.entries()) {
+      cota = Object.assign(new Cota(), cota);
+      cotas[index] = cota;
+    }
 
-  for (let [index, cota] of cotas.entries()) {
-    cota = Object.assign(new Cota(), cota);
-    cotas[index] = cota;
+    return cotas;
+  } catch (error) {
+    console.log("erro ao ler arquivo" + error.message);
   }
 
-  return cotas;
 }
 
 function removerCotas(cotas) {

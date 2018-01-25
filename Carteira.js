@@ -44,11 +44,18 @@ module.exports.ImprimirCarteira = async function ImprimirCarteira() {
   carteira.map(c => console.log("Nome: " + c.Nome + " Total: " + c.Quantidade));
 }
 
-async function EmitirOrdemVenda(cota, valor) {
+exports.EmitirOrdemVenda = async function EmitirOrdemVenda(cota, valor) {
 
   var result = await CTPClient.CriarOrdemVenda(cota.Label, valor, cota.Quantidade);
 
   console.log('Ordem de venda: ' + result.OrderID);
+}
+
+exports.EmitirOrdemCompra = async function EmitirOrdemCompra(cota) {
+  
+  var result = await CTPClient.CriarOrdemCompra(cota);
+
+  console.log('Ordem de compra: ' + result.OrderID);
 }
 
 module.exports.CancelarOrdem = async function CancelarOrdem(cota) {
@@ -56,8 +63,11 @@ module.exports.CancelarOrdem = async function CancelarOrdem(cota) {
   await CTPClient.CancelarOrdem(cota.TradePairId);
 }
 
+exports.CalcularTotal = async function CalcularTotal(cotas) {
 
-async function CalcularTotal(cotas) {
+  if(cotas == undefined)
+    cotas = await this.MinhaCarteira();
+
   var total = 0;
 
   cotas.forEach((cota) => {
@@ -65,7 +75,5 @@ async function CalcularTotal(cotas) {
   });
 
   console.log('Total: $' + total * await Bitcoin.PrecoBTC());
+  return total;
 }
-
-exports.CalcularTotal = CalcularTotal;
-exports.EmitirOrdemVenda = EmitirOrdemVenda;

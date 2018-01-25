@@ -2,6 +2,7 @@ var crypto = require('crypto');
 const axios = require("axios");
 var fs = require('fs');
 var Cota = require('./cota.js');
+var Ordem = require('./Ordem.js');
 
 API_KEY = '';
 API_SECRET = '';
@@ -152,12 +153,54 @@ module.exports.BuscarHistoricoTrade = async function (label) {
   return cotas;
 }
 
+module.exports.BuscarMinhasOrdensEmAberto = async function BuscarMinhasOrdensEmAberto(Mercado) {
+
+  var params = {
+    Market: Mercado
+  };
+
+  var result = await apiQuery('GetOpenOrders', params);
+
+  if (!result.Success)
+    throw 'Deu merda cancela tudo';
+  else if(result.Data.length == 0)
+    return undefined;
+
+  var ordemCTP = result.Data[0];
+  
+  var nome = ordemCTP.Market.split('/')[0];
+  var cota = new Cota(nome, ordemCTP.Rate, ordemCTP.Amount);
+  cota.TradePairId = ordemCTP.TradePairId;
+
+  var ordem = new Ordem(cota, ordemCTP.OrderId, ordemCTP.Type, ordemCTP.Remaining);
+
+  return ordem;
+}
+
 module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, quantidade) {
   var params = {
     Market: label,
     Type: 'Sell',
     Rate: preco,
     Amount: quantidade
+  };
+
+  var result = await apiQuery('SubmitTrade', params);
+
+  var retorno = -1;
+
+  if (result.Success)
+    retorno = result.Data.OrderId;
+
+  return retorno;
+}
+
+module.exports.CriarOrdemCompra = async function CriarOrdemCompra(cota) {
+  var params = {
+    Market: cota.Label,
+    Type: 'Buy',
+    Rate: cota.ValorCompra,
+    Amount: cota.Quantidade
   };
 
   var result = await apiQuery('SubmitTrade', params);

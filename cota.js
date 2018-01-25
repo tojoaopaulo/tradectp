@@ -47,6 +47,9 @@ class Cota {
   QuantidadeBTC() {
     if (this.Nome === 'BTC')
       return this.Quantidade;
+    
+    if(this.UltimoPreco == undefined)
+      this.UltimoPreco = this.ValorCompra;
 
     return this.UltimoPreco * this.Quantidade;
   }

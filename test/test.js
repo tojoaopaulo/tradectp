@@ -116,7 +116,7 @@ describe('Estrategia', () => {
     cota.Label = 'BTC/USDT';
     cota.Quantidade = 1;
 
-    Estrategia.GerarMelhorOrdemVenda(cota);
+    //Estrategia.GerarMelhorOrdemVenda(cota);
   });
 
   it('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async () => {
@@ -132,8 +132,12 @@ describe('Estrategia', () => {
     Estrategia.MelhorVender(cota);
   });
 
-  it.only('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async () => {
+  it('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async () => {
     Estrategia.SugestaoCompra();
+  });
+
+  it.only('Deve emitir uma ordem de compra', async () => {
+    //Estrategia.Comprar('XSPEC/BTC');
   });
 
 });
