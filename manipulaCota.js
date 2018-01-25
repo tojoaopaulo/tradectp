@@ -100,11 +100,10 @@ async function Processar(continuo = false) {
 
     var cotacoes = await CTPClient.BuscarMercados('BTC');
     //var cotacoes = await CTPClient.BuscarMercadosExterno('BTC');
-  
+
     for (let [index, cota] of cotas.entries()) {
       var imprimirCota = true;
-      switch (cota.Nome) 
-      {
+      switch (cota.Nome) {
         case 'USDT':
           imprimirCota = false;
           cota.UltimoPreco = cota.Quantidade;
@@ -126,19 +125,18 @@ async function Processar(continuo = false) {
           break;
       }
       cotas[index] = cota;
-  
-      if(imprimirCota)
+
+      if (imprimirCota)
         await imprimir(cota);
-  
+
       await Estrategia.ExecutarEstrategia(cota);
     }
-  
+
     ImprimirValorBTC();
     GravaCota(cotas);
     await Carteira.CalcularTotal(cotas);
-    
-    if(continuo)
-    {
+
+    if (continuo) {
       setTimeout(() => {
         process.stdout.write('\033c');
         Processar(continuo);

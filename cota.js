@@ -11,9 +11,9 @@ class Cota {
     var ultimoPreco;
 
     var TradePairId;
-    
+
     var Volume;
-    
+
     var Variacao1h;
     var Variacao24h;
     var Variacao7d;
@@ -26,14 +26,13 @@ class Cota {
   set UltimoPreco(value) {
     this.ultimoPreco = value;
 
-    if (typeof this.MaiorPreco != 'number')
-    {
-      if(this.ultimoPreco > this.MaiorPreco)
+    if (typeof this.MaiorPreco != 'number') {
+      if (this.ultimoPreco > this.MaiorPreco)
         this.MaiorPreco = this.ultimoPreco;
       else
         this.MaiorPreco = this.ValorCompra;
     }
-    else if(this.ultimoPreco > this.MaiorPreco)
+    else if (this.ultimoPreco > this.MaiorPreco)
       this.MaiorPreco = this.ultimoPreco;
   }
 
@@ -67,7 +66,7 @@ class Cota {
   EstaEmQuedaBizarra() {
     return this.VariacaoMaiorPreco() <= -10;
   }
-  
+
 }
 
 module.exports = Cota;

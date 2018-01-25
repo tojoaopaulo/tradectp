@@ -128,7 +128,7 @@ module.exports.BuscarMoedaEspecifica = async function (label) {
 
 module.exports.BuscarHistoricoTrade = async function (label) {
   var LblAnalise = label.replace('/', '_');
-  
+
   var params = {
     Market: LblAnalise
   };
@@ -136,9 +136,9 @@ module.exports.BuscarHistoricoTrade = async function (label) {
   var cotasCTP = await apiQuery('GetTradeHistory', params);
 
   // Verificar se o resultado vem ordenado desc timestamp
-  
+
   // pegar somente as ordens de compra
-  cotasCTP = cotasCTP.Data.filter(c => c.Type == 'Buy' );
+  cotasCTP = cotasCTP.Data.filter(c => c.Type == 'Buy');
 
   var cotas = [];
   for (let cotaCTP of cotasCTP) {
@@ -164,9 +164,9 @@ module.exports.CriarOrdemVenda = async function CriarOrdemVenda(label, preco, qu
 
   var retorno = -1;
 
-  if(result.Success)
+  if (result.Success)
     retorno = result.Data.OrderId;
-  
+
   return retorno;
 }
 
@@ -174,9 +174,8 @@ module.exports.ConsultarCarteira = async function ConsultarCarteira() {
   var result = await apiQuery('GetBalance');
 
   var cotas = [];
-  
-  if(result.Success)
-  {
+
+  if (result.Success) {
     var cotasResp = result.Data.filter(function (item) {
       return item.Total > 0;
     });
@@ -186,13 +185,13 @@ module.exports.ConsultarCarteira = async function ConsultarCarteira() {
       cota.UltimoPreco = cotaResp.price_btc;
       cotas.push(cota);
     }
-  } 
+  }
   return cotas;
 }
 
 module.exports.CancelarOrdem = async function (TradePairId) {
-    var param = { 'Type':  'TradePair', 'TradePairId':TradePairId  };
-    return await apiQuery('CancelTrade', param);
+  var param = { 'Type': 'TradePair', 'TradePairId': TradePairId };
+  return await apiQuery('CancelTrade', param);
 }
 
 

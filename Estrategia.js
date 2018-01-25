@@ -115,7 +115,7 @@ function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar) {
   var proporcaoCxV = compra.length - venda.length;
 
   var tendencia;
-  var meioQtd = parseInt(qtdOrdensAAnalisar/2);
+  var meioQtd = parseInt(qtdOrdensAAnalisar / 2);
 
   try {
     if (Math.abs(proporcaoCxV) < valorProporcao)
@@ -155,17 +155,17 @@ module.exports.GerarMelhorOrdemVenda = async function GerarMelhorOrdemVenda(cota
 module.exports.GerenciarVenda = async function GerenciarVenda(cota) {
 
   var cotas = Carteira.MinhaCarteira();
-  cota = cotas.filter(c => c.Nome == cota.Nome );
+  cota = cotas.filter(c => c.Nome == cota.Nome);
 
   if (cota.quantidade > quantidadeMinimaPossivelOperar) {
     var ultimasOrdens = await CTPClient.BuscarUltimasOrdensAbertas(cota.Label);
 
     var valorVenda = ultimasOrdens.Sell[0].Price - 0.00000001;
 
-    await Carteira.EmitirOrdemVenda(cota, valorVenda); 
+    await Carteira.EmitirOrdemVenda(cota, valorVenda);
   }
-  
-  
+
+
 
 }
 

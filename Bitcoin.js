@@ -7,12 +7,11 @@ var tempoAtualizacaoPreco = 3;
 module.exports.tempoAtualizacaoPreco = tempoAtualizacaoPreco;
 var valorMedioCompraBTC = "14000";
 
-module.exports.ConsultarCotacaoBTC = async function ConsultarCotacaoBTC()
-{
+module.exports.ConsultarCotacaoBTC = async function ConsultarCotacaoBTC() {
   cotacao = await CTPClient.BuscarMoedaEspecifica('BITCOIN');
 
   var result = await CTPClient.BuscarMercados('USDT');
-  
+
   BTCCTP = result.filter(function (item) {
     return item.Nome == 'BTC';
   })[0];
@@ -21,7 +20,7 @@ module.exports.ConsultarCotacaoBTC = async function ConsultarCotacaoBTC()
   cotacao.ValorCompra = valorMedioCompraBTC;
 
   console.log('Valor BTC Atualizado');
-  return cotacao;  
+  return cotacao;
 }
 
 module.exports.PrecoBTC = async function PrecoBTC() {
@@ -36,9 +35,9 @@ module.exports.PrecoBTC = async function PrecoBTC() {
   return cotacao.UltimoPreco;
 }
 
-module.exports.CotacaoBTC = async function CotacaoBTC () {
+module.exports.CotacaoBTC = async function CotacaoBTC() {
   // Garante atualizacao preco BTC
   await this.PrecoBTC();
-  
+
   return cotacao;
 }

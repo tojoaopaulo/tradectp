@@ -9,13 +9,13 @@ var CTPClient = require('../coreCTPClient.js');
 
 function MockCota() {
   var cota = new Cota();
-    cota.Nome = 'BTC';
-    cota.Label = 'BTC/USDT';
-    cota.ValorCompra = 14000;
-    cota.MaiorPreco = 11358.7,
+  cota.Nome = 'BTC';
+  cota.Label = 'BTC/USDT';
+  cota.ValorCompra = 14000;
+  cota.MaiorPreco = 11358.7,
     cota.UltimoPreco = 10000,
     cota.TradePairId = 4909;
-    cota.Quantidade = 1;
+  cota.Quantidade = 1;
 
   return cota;
 }
@@ -40,7 +40,7 @@ describe('Carteira', () => {
 
     assert.ok(typeof preco === 'number');
   });
-  
+
 
 });
 
@@ -111,36 +111,36 @@ describe('Manipulador de cota', () => {
 });
 
 describe('Estrategia', () => {
-    it('Calcula o melhor valor de venda para BTC deve criar uma ordem de venda no segundo menor valor existente', async() => {
-        var cota = new Cota();
-        cota.Label = 'BTC/USDT';
-        cota.Quantidade = 1;
+  it('Calcula o melhor valor de venda para BTC deve criar uma ordem de venda no segundo menor valor existente', async () => {
+    var cota = new Cota();
+    cota.Label = 'BTC/USDT';
+    cota.Quantidade = 1;
 
-        Estrategia.GerarMelhorOrdemVenda(cota);
-    });
+    Estrategia.GerarMelhorOrdemVenda(cota);
+  });
 
-  it('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async() => {
+  it('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async () => {
     var cota = new Cota();
     cota.Nome = 'BTC';
     cota.Label = 'BTC/USDT';
     cota.ValorCompra = 14000;
     cota.MaiorPreco = 11358.7,
-    cota.UltimoPreco = 10000,
-    cota.TradePairId = 4909;
+      cota.UltimoPreco = 10000,
+      cota.TradePairId = 4909;
     cota.Quantidade = 1;
 
     Estrategia.MelhorVender(cota);
   });
 
-  it.only('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async() => {
+  it.only('Deve analisar o historico do mercado e dar 5 sugestões de compra de ativos em alta', async () => {
     Estrategia.SugestaoCompra();
-});
-  
+  });
+
 });
 
 describe('CORE CTP', () => {
-    it('Deve cancelar uma ordem em aberto', async() => {
-        var result = await CTPClient.CancelarOrdem(5074); // BTX PAIR
-        assert.ok(result.Success);
-    })
+  it('Deve cancelar uma ordem em aberto', async () => {
+    var result = await CTPClient.CancelarOrdem(5074); // BTX PAIR
+    assert.ok(result.Success);
+  })
 })

@@ -42,9 +42,7 @@ async function ProcessaAcao(acao) {
   }
   catch (error) {
     console.log(error);
-
-    
-  } 
+  }
 }
 
 function ControlaFluxo() {
