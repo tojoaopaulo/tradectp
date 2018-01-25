@@ -205,7 +205,7 @@ module.exports.SugestaoCompra = async function SugestaoCompra() {
   // Ordena por volume
   todosMercados.sort(ComparaPorVolume);
 
-  for (var i = 0; i < todosMercados.length && sugestoes.length < 10; i++) {
+  for (var i = 0; i < todosMercados.length || sugestoes.length < 10; i++) {
     var cota = todosMercados[i];
     //if(cota.Variacao24h > 0)
     //{
