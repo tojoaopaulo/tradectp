@@ -28,5 +28,6 @@
   "bugs": {
     "url": "https://github.com/tojoaopaulo/tradectp/issues"
   },
+  "engines":{"node": "0.9.x"},
   "homepage": "https://github.com/tojoaopaulo/tradectp#readme"
 }
