@@ -141,7 +141,8 @@ module.exports.GerarMelhorOrdemVenda = async function GerarMelhorOrdemVenda(cota
     var result = await CTPClient.BuscarUltimasOrdensAbertas(cota.Label);
 
     // TODO: Se a quantidade da primeira ordem for um numero alto, então passar a considerar a primeira ordem
-    var valorVenda = result.Sell[1].Price - 0.00000001;
+    // Se a primeira for um valor a baixo da segunda, colocar como segunda a ser executada
+    var valorVenda = result.Sell[0].Price - 0.00000001;
 
     // chama um processo em paralelo sem considerar tempo para atualizar a quantidade e verificar se o menor valor mudou
     //this.GerenciarVenda(cota);
