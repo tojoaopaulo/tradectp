@@ -147,6 +147,7 @@ module.exports.BuscarHistoricoTrade = async function (label) {
     cota.Nome = cotaCTP.Market.split('/')[0];
     cota.Label = cotaCTP.Market;
     cota.ValorCompra = cotaCTP.Rate;
+    cota.Quantidade = cotaCTP.Amount;
     cotas.push(cota);
   }
 

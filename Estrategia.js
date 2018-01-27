@@ -258,31 +258,42 @@ module.exports.AnalisarTendenciaAtivo = async function AnalisarTendenciaAtivo() 
 
 module.exports.Comprar = async function Comprar(Label) {
   console.log(Label);
-  try {
-    var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
-    var minhaOrdem = await CTPClient.BuscarMinhasOrdensEmAberto(Label);
 
-    var ValorOrdemCompraMaisAlta = livroOrdens.Buy[0].Price;
-
-    var cota = new Cota();
-    cota.Label = Label;
-
-    // ordem existe com valor igual - nao gera ordem
-    if(minhaOrdem != undefined && ValorOrdemCompraMaisAlta == minhaOrdem.Cota.ValorCompra)
-      return;
-
-    // ordem existe com valor diferente - cancela e gera ordem
-    if (minhaOrdem != undefined && ValorOrdemCompraMaisAlta != minhaOrdem.Cota.ValorCompra)
-    {
-      await Carteira.CancelarOrdem(minhaOrdem.Cota);
-      cota.Quantidade = minhaOrdem.Restante;
+  do
+  {    
+    try {
+      var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
+      var minhaOrdem = await CTPClient.BuscarMinhasOrdensEmAberto(Label);
+  
+      var ValorOrdemCompraMaisAlta = livroOrdens.Buy[0].Price;
+  
+      var cota = new Cota();
+      cota.Label = Label;
+  
+      // ordem existe com valor igual - nao gera ordem
+      if(minhaOrdem != undefined && ValorOrdemCompraMaisAlta == minhaOrdem.Cota.ValorCompra)
+        continue;
+  
+      // ordem existe com valor diferente - cancela e gera ordem
+      if (minhaOrdem != undefined && ValorOrdemCompraMaisAlta != minhaOrdem.Cota.ValorCompra)
+      {
+        await Carteira.CancelarOrdem(minhaOrdem.Cota);
+        cota.Quantidade = minhaOrdem.Restante;
+      }
+  
+      await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
+      
+      var valorDiferencaCompraXUltimaOrdem = 0;
+      if(minhaOrdem != undefined )
+        var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra; 
+      
+      var cotas = await Carteira.MinhaCarteira();
+      cotaCarteira = cotas.filter(c => c.Label == Label);
     }
-
-    await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
-  }
-  catch (error) {
-    console.log("DEU MERDA PARA COMPRAR" + error.message)
-  }
+    catch (error) {
+      console.log("DEU MERDA PARA COMPRAR" + error.message)
+    }
+  } while(valorDiferencaCompraXUltimaOrdem < 0.00000010 && cotaCarteira.length == 0)
 }
 
 module.exports.GerarMelhorOrdemCompra = async function GerarMelhorOrdemCompra(cota, ultimoValorCompra) {

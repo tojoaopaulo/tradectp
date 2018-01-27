@@ -137,7 +137,7 @@ describe('Estrategia', () => {
   });
 
   it.only('Deve emitir uma ordem de compra', async () => {
-    //Estrategia.Comprar('XSPEC/BTC');
+    //Estrategia.Comprar('PRL/BTC');
   });
 
 });
