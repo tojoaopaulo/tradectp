@@ -281,14 +281,17 @@ module.exports.Comprar = async function Comprar(Label) {
         cota.Quantidade = minhaOrdem.Restante;
       }
   
-      await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
-      
       var valorDiferencaCompraXUltimaOrdem = 0;
       if(minhaOrdem != undefined )
         var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra; 
       
+      if(valorDiferencaCompraXUltimaOrdem < 0.00000010)
+        await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
+
       var cotas = await Carteira.MinhaCarteira();
       cotaCarteira = cotas.filter(c => c.Label == Label);
+
+      console.log(valorDiferencaCompraXUltimaOrdem);
     }
     catch (error) {
       console.log("DEU MERDA PARA COMPRAR" + error.message)
