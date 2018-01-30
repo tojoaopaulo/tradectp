@@ -101,6 +101,54 @@ function CalculaTendenciaPorOrdens(ordens) {
   return tendencia;
 }
 
+
+
+module.exports.CalcularTendenciaPorRangeConsiderandoValor = function CalcularTendenciaPorRangeConsiderandoValor(ordens, qtdOrdensAAnalisar) {
+  var amostraOrdens = ordens.slice(0, qtdOrdensAAnalisar);
+
+  var alta = 0;
+  var queda = 0;
+
+  for (let [index, ordem] of amostraOrdens.entries()) {
+
+    if(index+1 == amostraOrdens.length)
+      continue;
+      
+    var ordemAnterior = ordens[index + 1];
+
+    if (ordem.Price > ordemAnterior.Price)
+      alta++;
+    else if (ordem.Price < ordemAnterior.Price)
+      queda++;
+
+  }
+
+  // Quantas vezes teve variação no preço
+  var qtdVariacoes = alta + queda;
+  var valorProporcao = (10 / 100) * qtdVariacoes;
+
+  var diferenca = alta - queda;
+
+  var tendencia;
+
+  try {
+    if (diferenca < 0 && Math.abs(diferenca) > valorProporcao)
+      tendencia = TendenciaMercado.QUEDA;
+    else if (diferenca > 0 && diferenca > valorProporcao)
+      tendencia = TendenciaMercado.ALTA;
+    else
+      tendencia = TendenciaMercado.LATERALIZADO;
+
+  } catch (error) {
+    console.log(meioQtd + ' ' + amostraOrdens[0] + ' ' + amostraOrdens.length)
+  }
+
+  console.log(tendencia + ' ' + diferenca);
+  
+  return tendencia;
+}
+
+
 function CalculaTendenciaPorRange(ordens, qtdOrdensAAnalisar) {
   var valorProporcao = (15 / 100) * qtdOrdensAAnalisar;
   var amostraOrdens = ordens.slice(0, qtdOrdensAAnalisar);
@@ -259,33 +307,31 @@ module.exports.AnalisarTendenciaAtivo = async function AnalisarTendenciaAtivo() 
 module.exports.Comprar = async function Comprar(Label) {
   console.log(Label);
 
-  do
-  {    
+  do {
     try {
       var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
       var minhaOrdem = await CTPClient.BuscarMinhasOrdensEmAberto(Label);
-  
+
       var ValorOrdemCompraMaisAlta = livroOrdens.Buy[0].Price;
-  
+
       var cota = new Cota();
       cota.Label = Label;
-  
+
       // ordem existe com valor igual - nao gera ordem
-      if(minhaOrdem != undefined && ValorOrdemCompraMaisAlta == minhaOrdem.Cota.ValorCompra)
+      if (minhaOrdem != undefined && ValorOrdemCompraMaisAlta == minhaOrdem.Cota.ValorCompra)
         continue;
-  
+
       // ordem existe com valor diferente - cancela e gera ordem
-      if (minhaOrdem != undefined && ValorOrdemCompraMaisAlta != minhaOrdem.Cota.ValorCompra)
-      {
+      if (minhaOrdem != undefined && ValorOrdemCompraMaisAlta != minhaOrdem.Cota.ValorCompra) {
         await Carteira.CancelarOrdem(minhaOrdem.Cota);
         cota.Quantidade = minhaOrdem.Restante;
       }
-  
+
       var valorDiferencaCompraXUltimaOrdem = 0;
-      if(minhaOrdem != undefined )
-        var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra; 
-      
-      if(valorDiferencaCompraXUltimaOrdem < 0.00000010)
+      if (minhaOrdem != undefined)
+        var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra;
+
+      if (valorDiferencaCompraXUltimaOrdem < 0.00000010)
         await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
 
       var cotas = await Carteira.MinhaCarteira();
@@ -296,7 +342,7 @@ module.exports.Comprar = async function Comprar(Label) {
     catch (error) {
       console.log("DEU MERDA PARA COMPRAR" + error.message)
     }
-  } while(valorDiferencaCompraXUltimaOrdem < 0.00000010 && cotaCarteira.length == 0)
+  } while (valorDiferencaCompraXUltimaOrdem < 0.00000010 && cotaCarteira.length == 0)
 }
 
 module.exports.GerarMelhorOrdemCompra = async function GerarMelhorOrdemCompra(cota, ultimoValorCompra) {

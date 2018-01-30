@@ -136,10 +136,16 @@ describe('Estrategia', () => {
     Estrategia.SugestaoCompra();
   });
 
-  it.only('Deve emitir uma ordem de compra', async () => {
+  it('Deve emitir uma ordem de compra', async () => {
     //Estrategia.Comprar('PRL/BTC');
   });
 
+  it.only('Deve verificar a atual tendencia do mercado olhando para os valores das ordens', async () => { 
+    var result = await CTPClient.BuscarUltimasOrdensEfetivadas("R/BTC", 1);
+    Estrategia.CalcularTendenciaPorRangeConsiderandoValor(result,100);
+  });
+
+  
 });
 
 describe('CORE CTP', () => {
