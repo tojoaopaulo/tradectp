@@ -50,12 +50,12 @@ module.exports.AnalisarHistoricoMercado = async function AnalisarHistoricoMercad
   var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label, Tempo);
 
   if (result != null)
-    return await CalculaTendenciaPorOrdens(result);
+    return await this.CalculaTendenciaPorOrdens(result);
   else
     console.log("deu ruim ");
 }
 
-async function CalculaTendenciaPorOrdens(ordens) {
+module.exports.CalculaTendenciaPorOrdens = async function CalculaTendenciaPorOrdens(ordens) {
   var histOrdens = ordens;
   var tendenciaCurta = CalculaTendenciaPorRange(histOrdens, 20);
   var tendenciaLonga = CalculaTendenciaPorRange(histOrdens, 200);
@@ -249,7 +249,6 @@ module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
 
     // Por hora so executa a estrategia para BTX
     if (await this.MelhorVender(cota))
-    //if(await this.MelhorVender(cota))
     {
       console.log("CRIANDO ORDEM PARA VENDER " + cota.Nome)
       await this.GerarMelhorOrdemVenda(cota);

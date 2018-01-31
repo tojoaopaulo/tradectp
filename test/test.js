@@ -125,7 +125,7 @@ describe('Estrategia', () => {
     cota.Label = 'BTC/USDT';
     cota.ValorCompra = 14000;
     cota.MaiorPreco = 11358.7,
-      cota.UltimoPreco = 10000,
+      cota.UltimoPreco = 10500,
       cota.TradePairId = 4909;
     cota.Quantidade = 1;
 
