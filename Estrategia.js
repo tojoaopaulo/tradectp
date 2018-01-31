@@ -55,11 +55,33 @@ module.exports.AnalisarHistoricoMercado = async function AnalisarHistoricoMercad
     console.log("deu ruim ");
 }
 
-function CalculaTendenciaPorOrdens(ordens) {
+async function CalculaTendenciaPorOrdens(ordens) {
   var histOrdens = ordens;
-  var tendenciaLonga = CalculaTendenciaPorRange(histOrdens, 200);
   var tendenciaCurta = CalculaTendenciaPorRange(histOrdens, 20);
+  var tendenciaLonga = CalculaTendenciaPorRange(histOrdens, 200);
+  
+  return await this.DefinirTendencia(tendenciaCurta, tendenciaLonga);
+}
 
+module.exports.AnalisarHistoricoMercadoATUALIZADO = async function AnalisarHistoricoMercadoATUALIZADO(Label, Tempo = 1) {
+
+  var result = await CTPClient.BuscarUltimasOrdensEfetivadas(Label, Tempo);
+
+  if (result != null)
+    return await this.CalculaTendenciaPorOrdensATUALIZADO(result);
+  else
+    console.log("deu ruim ");
+}
+
+module.exports.CalculaTendenciaPorOrdensATUALIZADO = async function CalculaTendenciaPorOrdensATUALIZADO(ordens) {
+  var histOrdens = ordens;
+  var tendenciaCurta = await this.CalcularTendenciaPorRangeConsiderandoValor(histOrdens, 20);
+  var tendenciaLonga = await this.CalcularTendenciaPorRangeConsiderandoValor(histOrdens, 200);
+  
+  return await this.DefinirTendencia(tendenciaCurta, tendenciaLonga);
+}
+
+module.exports.DefinirTendencia = async function DefinirTendencia(tendenciaCurta,tendenciaLonga) {
   var tendencia;
 
   if (tendenciaCurta == TendenciaMercado.QUEDA &&
@@ -101,9 +123,7 @@ function CalculaTendenciaPorOrdens(ordens) {
   return tendencia;
 }
 
-
-
-module.exports.CalcularTendenciaPorRangeConsiderandoValor = function CalcularTendenciaPorRangeConsiderandoValor(ordens, qtdOrdensAAnalisar) {
+module.exports.CalcularTendenciaPorRangeConsiderandoValor = async function CalcularTendenciaPorRangeConsiderandoValor(ordens, qtdOrdensAAnalisar) {
   var amostraOrdens = ordens.slice(0, qtdOrdensAAnalisar);
 
   var alta = 0;
@@ -143,7 +163,7 @@ module.exports.CalcularTendenciaPorRangeConsiderandoValor = function CalcularTen
     console.log(meioQtd + ' ' + amostraOrdens[0] + ' ' + amostraOrdens.length)
   }
 
-  console.log(tendencia + ' ' + diferenca);
+  console.log(tendencia + ' - Variacoes: ' + qtdVariacoes + ' Dif: ' + diferenca);
   
   return tendencia;
 }
@@ -246,7 +266,6 @@ const TendenciaMercado = {
   LATERALIZADO: 'lateralizado'
 };
 
-// somente sobre top 5 volume 
 module.exports.SugestaoCompra = async function SugestaoCompra() {
 
   var todosMercados = await CTPClient.BuscarMercados('BTC');
@@ -257,16 +276,15 @@ module.exports.SugestaoCompra = async function SugestaoCompra() {
 
   for (var i = 0; i < todosMercados.length || sugestoes.length < 10; i++) {
     var cota = todosMercados[i];
-    //if(cota.Variacao24h > 0)
-    //{
-    var tendencia = await this.AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
+
+    //var tendencia = await this.AnalisarHistoricoMercado(cota.Label, periodoTempoParaAnalisar);
+    var tendencia = await this.AnalisarHistoricoMercadoATUALIZADO(cota.Label, periodoTempoParaAnalisar);
 
     if (tendencia == TendenciaMercado.ALTA) {
       sugestoes.push(cota);
 
       console.log(JSON.stringify(cota));
     }
-    //}
   }
 
   return sugestoes;
@@ -309,6 +327,13 @@ module.exports.Comprar = async function Comprar(Label) {
 
   do {
     try {
+      var cotas = await Carteira.MinhaCarteira();
+      cotaCarteira = cotas.filter(c => c.Label == Label);
+
+      var jaComprou = cotaCarteira.length > 0;
+      if(jaComprou)
+        continue;
+
       var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
       var minhaOrdem = await CTPClient.BuscarMinhasOrdensEmAberto(Label);
 
@@ -332,17 +357,15 @@ module.exports.Comprar = async function Comprar(Label) {
         var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra;
 
       if (valorDiferencaCompraXUltimaOrdem < 0.00000010)
-        await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
-
-      var cotas = await Carteira.MinhaCarteira();
-      cotaCarteira = cotas.filter(c => c.Label == Label);
+        await this.GerarMelhorOrdemCompra(cota, 0.00000001);
+        //await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
 
       console.log(valorDiferencaCompraXUltimaOrdem);
     }
     catch (error) {
       console.log("DEU MERDA PARA COMPRAR" + error.message)
     }
-  } while (valorDiferencaCompraXUltimaOrdem < 0.00000010 && cotaCarteira.length == 0)
+  } while (valorDiferencaCompraXUltimaOrdem < 0.00000010 && !jaComprou)
 }
 
 module.exports.GerarMelhorOrdemCompra = async function GerarMelhorOrdemCompra(cota, ultimoValorCompra) {
