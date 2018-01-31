@@ -59,7 +59,7 @@ async function CalculaTendenciaPorOrdens(ordens) {
   var histOrdens = ordens;
   var tendenciaCurta = CalculaTendenciaPorRange(histOrdens, 20);
   var tendenciaLonga = CalculaTendenciaPorRange(histOrdens, 200);
-  
+
   return await this.DefinirTendencia(tendenciaCurta, tendenciaLonga);
 }
 
@@ -77,11 +77,11 @@ module.exports.CalculaTendenciaPorOrdensATUALIZADO = async function CalculaTende
   var histOrdens = ordens;
   var tendenciaCurta = await this.CalcularTendenciaPorRangeConsiderandoValor(histOrdens, 20);
   var tendenciaLonga = await this.CalcularTendenciaPorRangeConsiderandoValor(histOrdens, 200);
-  
+
   return await this.DefinirTendencia(tendenciaCurta, tendenciaLonga);
 }
 
-module.exports.DefinirTendencia = async function DefinirTendencia(tendenciaCurta,tendenciaLonga) {
+module.exports.DefinirTendencia = async function DefinirTendencia(tendenciaCurta, tendenciaLonga) {
   var tendencia;
 
   if (tendenciaCurta == TendenciaMercado.QUEDA &&
@@ -131,9 +131,9 @@ module.exports.CalcularTendenciaPorRangeConsiderandoValor = async function Calcu
 
   for (let [index, ordem] of amostraOrdens.entries()) {
 
-    if(index+1 == amostraOrdens.length)
+    if (index + 1 == amostraOrdens.length)
       continue;
-      
+
     var ordemAnterior = ordens[index + 1];
 
     if (ordem.Price > ordemAnterior.Price)
@@ -151,20 +151,17 @@ module.exports.CalcularTendenciaPorRangeConsiderandoValor = async function Calcu
 
   var tendencia;
 
-  try {
-    if (diferenca < 0 && Math.abs(diferenca) > valorProporcao)
-      tendencia = TendenciaMercado.QUEDA;
-    else if (diferenca > 0 && diferenca > valorProporcao)
-      tendencia = TendenciaMercado.ALTA;
-    else
-      tendencia = TendenciaMercado.LATERALIZADO;
-
-  } catch (error) {
-    console.log(meioQtd + ' ' + amostraOrdens[0] + ' ' + amostraOrdens.length)
-  }
+  if(qtdVariacoes < qtdOrdensAAnalisar/2)
+    tendencia = TendenciaMercado.LATERALIZADO;
+  else if (diferenca < 0 && Math.abs(diferenca) > valorProporcao)
+    tendencia = TendenciaMercado.QUEDA;
+  else if (diferenca > 0 && diferenca > valorProporcao)
+    tendencia = TendenciaMercado.ALTA;
+  else
+    tendencia = TendenciaMercado.LATERALIZADO;
 
   console.log(tendencia + ' - Variacoes: ' + qtdVariacoes + ' Dif: ' + diferenca);
-  
+
   return tendencia;
 }
 
@@ -272,7 +269,8 @@ module.exports.SugestaoCompra = async function SugestaoCompra() {
   var sugestoes = [];
 
   // Ordena por volume
-  todosMercados.sort(ComparaPorVolume);
+  //todosMercados.sort(ComparaPorVolume);
+  todosMercados.sort(ComparaPorVariacao);
 
   for (var i = 0; i < todosMercados.length || sugestoes.length < 10; i++) {
     var cota = todosMercados[i];
@@ -296,6 +294,17 @@ function ComparaPorVolume(a, b) {
   if (a.Volume > b.Volume)
     comparacao = -1;
   else if (a.Volume < b.Volume)
+    comparacao = 1;
+
+  return comparacao;
+}
+
+function ComparaPorVariacao(a, b) {
+  let comparacao = 0;
+
+  if (a.Variacao24h > b.Variacao24h)
+    comparacao = -1;
+  else if (a.Variacao24h < b.Variacao24h)
     comparacao = 1;
 
   return comparacao;
@@ -331,7 +340,7 @@ module.exports.Comprar = async function Comprar(Label) {
       cotaCarteira = cotas.filter(c => c.Label == Label);
 
       var jaComprou = cotaCarteira.length > 0;
-      if(jaComprou)
+      if (jaComprou)
         continue;
 
       var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
@@ -357,8 +366,7 @@ module.exports.Comprar = async function Comprar(Label) {
         var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra;
 
       if (valorDiferencaCompraXUltimaOrdem < 0.00000010)
-        await this.GerarMelhorOrdemCompra(cota, 0.00000001);
-        //await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
+        await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
 
       console.log(valorDiferencaCompraXUltimaOrdem);
     }
