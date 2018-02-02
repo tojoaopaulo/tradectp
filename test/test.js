@@ -137,7 +137,7 @@ describe('Estrategia', () => {
   });
 
   it('Deve emitir uma ordem de compra', async () => {
-    //Estrategia.Comprar('PRL/BTC');
+    //Estrategia.Comprar('POSW/BTC');
   });
 
   it.only('Deve verificar a atual tendencia do mercado olhando para os valores das ordens', async () => { 

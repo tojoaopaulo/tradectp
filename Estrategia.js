@@ -340,8 +340,11 @@ module.exports.Comprar = async function Comprar(Label) {
 
       var jaComprou = cotaCarteira.length > 0;
       if (jaComprou)
+      {
+        console.log("COMPROU");
         continue;
-
+      }
+        
       var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
       var minhaOrdem = await CTPClient.BuscarMinhasOrdensEmAberto(Label);
 
@@ -365,7 +368,7 @@ module.exports.Comprar = async function Comprar(Label) {
         var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra;
 
       if (valorDiferencaCompraXUltimaOrdem < 0.00000010)
-        await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta);
+        await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta, cotas);
 
       console.log(valorDiferencaCompraXUltimaOrdem);
     }
@@ -375,12 +378,19 @@ module.exports.Comprar = async function Comprar(Label) {
   } while (valorDiferencaCompraXUltimaOrdem < 0.00000010 && !jaComprou)
 }
 
-module.exports.GerarMelhorOrdemCompra = async function GerarMelhorOrdemCompra(cota, ultimoValorCompra) {
+module.exports.GerarMelhorOrdemCompra = async function GerarMelhorOrdemCompra(cota, ultimoValorCompra, cotasCarteira) {
 
   cota.ValorCompra = ultimoValorCompra + 0.00000001;
 
   if (cota.Quantidade == 0) {
     var quantidadeParaCadaAtivo = await Carteira.CalcularTotal() / 5;
+
+    var BTC = await Bitcoin.CotacaoBTC();
+    BTCNaCarteira = cotasCarteira.filter(c => c.Nome == BTC.Nome)[0];
+      
+    if(quantidadeParaCadaAtivo > BTCNaCarteira.Quantidade)
+      quantidadeParaCadaAtivo = BTCNaCarteira.Quantidade;
+
     cota.Quantidade = quantidadeParaCadaAtivo / cota.ValorCompra;
   }
 
