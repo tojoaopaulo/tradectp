@@ -4,7 +4,7 @@ var Bitcoin = require('./Bitcoin.js');
 const AT = require('technicalindicators');
 var Cota = require('./Cota.js');
 
-var IGNORARQUEDABTC = true;
+var IGNORARQUEDABTC = false;
 var periodoTempoParaAnalisar = 1;
 var quantidadeMinimaPossivelOperar = 0.0005;
 
