@@ -4,7 +4,7 @@ var Bitcoin = require('./Bitcoin.js');
 const AT = require('technicalindicators');
 var Cota = require('./Cota.js');
 
-var IGNORARQUEDABTC = false;
+var IGNORARQUEDABTC = true;
 var periodoTempoParaAnalisar = 1;
 var quantidadeMinimaPossivelOperar = 0.0005;
 
@@ -151,7 +151,7 @@ module.exports.CalcularTendenciaPorRangeConsiderandoValor = async function Calcu
 
   var tendencia;
 
-  if(qtdVariacoes < qtdOrdensAAnalisar/2)
+  if (qtdVariacoes < qtdOrdensAAnalisar / 2)
     tendencia = TendenciaMercado.LATERALIZADO;
   else if (diferenca < 0 && Math.abs(diferenca) > valorProporcao)
     tendencia = TendenciaMercado.QUEDA;
@@ -248,8 +248,7 @@ module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
     await Carteira.CancelarOrdem(cota);
 
     // Por hora so executa a estrategia para BTX
-    if (await this.MelhorVender(cota))
-    {
+    if (await this.MelhorVender(cota)) {
       console.log("CRIANDO ORDEM PARA VENDER " + cota.Nome)
       await this.GerarMelhorOrdemVenda(cota);
     }
@@ -335,16 +334,7 @@ module.exports.Comprar = async function Comprar(Label) {
 
   do {
     try {
-      var cotas = await Carteira.MinhaCarteira();
-      cotaCarteira = cotas.filter(c => c.Label == Label);
 
-      var jaComprou = cotaCarteira.length > 0;
-      if (jaComprou)
-      {
-        console.log("COMPROU");
-        continue;
-      }
-        
       var livroOrdens = await CTPClient.BuscarUltimasOrdensAbertas(Label);
       var minhaOrdem = await CTPClient.BuscarMinhasOrdensEmAberto(Label);
 
@@ -367,6 +357,15 @@ module.exports.Comprar = async function Comprar(Label) {
       if (minhaOrdem != undefined)
         var valorDiferencaCompraXUltimaOrdem = ValorOrdemCompraMaisAlta - minhaOrdem.Cota.ValorCompra;
 
+      var cotas = await Carteira.MinhaCarteira();
+      cotaCarteira = cotas.filter(c => c.Label == Label);
+
+      var jaComprou = cotaCarteira.length > 0 && (cotaCarteira[0].Quantidade * cotaCarteira[0].ValorCompra) > quantidadeMinimaPossivelOperar;
+      if (jaComprou) {
+        console.log("COMPROU");
+        continue;
+      }
+
       if (valorDiferencaCompraXUltimaOrdem < 0.00000010)
         await this.GerarMelhorOrdemCompra(cota, ValorOrdemCompraMaisAlta, cotas);
 
@@ -387,8 +386,8 @@ module.exports.GerarMelhorOrdemCompra = async function GerarMelhorOrdemCompra(co
 
     var BTC = await Bitcoin.CotacaoBTC();
     BTCNaCarteira = cotasCarteira.filter(c => c.Nome == BTC.Nome)[0];
-      
-    if(quantidadeParaCadaAtivo > BTCNaCarteira.Quantidade)
+
+    if (quantidadeParaCadaAtivo > BTCNaCarteira.Quantidade)
       quantidadeParaCadaAtivo = BTCNaCarteira.Quantidade;
 
     cota.Quantidade = quantidadeParaCadaAtivo / cota.ValorCompra;
