@@ -2,7 +2,7 @@ var CTPClient = require('./coreCTPClient.js');
 var Carteira = require('./Carteira.js');
 var Bitcoin = require('./Bitcoin.js');
 const AT = require('technicalindicators');
-var Cota = require('./Cota.js');
+var Cota = require('./cota.js');
 
 var IGNORARQUEDABTC = true;
 var periodoTempoParaAnalisar = 1;
@@ -243,7 +243,12 @@ module.exports.ExecutarEstrategia = async function ExecutarEstrategia(cota) {
 
   console.log("ESTRATEGIA " + cota.Nome)
 
-  if (cota.Quantidade > quantidadeMinimaPossivelOperar) {
+  var BTC = await Bitcoin.CotacaoBTC();
+
+  if (
+    (cota.Nome == BTC.Nome && cota.Quantidade > quantidadeMinimaPossivelOperar) ||
+    (cota.Quantidade * cota.UltimoPreco > quantidadeMinimaPossivelOperar)  
+    ) {
     // Cancela as ordens em aberto para gerar com valor atualizado
     await Carteira.CancelarOrdem(cota);
 
