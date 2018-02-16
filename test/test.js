@@ -119,15 +119,24 @@ describe('Estrategia', () => {
     //Estrategia.GerarMelhorOrdemVenda(cota);
   });
 
-  it('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async () => {
-    var cota = new Cota();
+  it.only('Verifica se esta na hora de sair de determinado ativo, seja pelo preço da BTC ou por tendencia do mercado', async () => {
+  /*  var cota = new Cota();
     cota.Nome = 'BTC';
     cota.Label = 'BTC/USDT';
     cota.ValorCompra = 14000;
     cota.MaiorPreco = 11358.7,
-      cota.UltimoPreco = 10500,
-      cota.TradePairId = 4909;
+    cota.UltimoPreco = 10500,
+    cota.TradePairId = 4909;
     cota.Quantidade = 1;
+*/
+    var cota = new Cota();
+    cota.Nome = 'HXX';
+    cota.Label = 'HXX/BTC';
+    cota.ValorCompra = 0.00012621;
+    cota.MaiorPreco = 0.00011899,
+    cota.UltimoPreco = 0.00011899,
+    cota.TradePairId = 4948;
+    cota.Quantidade = 26.83194266;
 
     Estrategia.MelhorVender(cota);
   });
@@ -140,7 +149,7 @@ describe('Estrategia', () => {
     //Estrategia.Comprar('POSW/BTC');
   });
 
-  it.only('Deve verificar a atual tendencia do mercado olhando para os valores das ordens', async () => { 
+  it('Deve verificar a atual tendencia do mercado olhando para os valores das ordens', async () => { 
     var result = await CTPClient.BuscarUltimasOrdensEfetivadas("R/BTC", 1);
     Estrategia.CalcularTendenciaPorRangeConsiderandoValor(result,100);
   });

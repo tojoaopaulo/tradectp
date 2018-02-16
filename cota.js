@@ -6,8 +6,9 @@ class Cota {
     this.Label = nome === 'BTC' || nome === 'USDT' ? 'BTC/USDT' : nome + '/BTC';
     this.ValorCompra = nome == 'USDT' ? 1 : new Number(valor);
     this.Quantidade = new Number(quantidade);
-    this.MaiorPreco = 0;
+    
     // privada
+    var maiorPreco = 0;
     var ultimoPreco;
 
     var TradePairId;
@@ -19,6 +20,16 @@ class Cota {
     var Variacao7d;
   }
 
+  get MaiorPreco(){
+    if(this.maiorPreco < this.ValorCompra)
+      this.maiorPreco = this.ValorCompra;
+    return this.maiorPreco;
+  }
+  
+  set MaiorPreco(value) {
+    this.maiorPreco = value;
+  }
+  
   get UltimoPreco() {
     return this.ultimoPreco;
   }
