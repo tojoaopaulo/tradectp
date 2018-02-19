@@ -1,0 +1,12 @@
+[Unit]
+Description=Node.js app putao
+[Service]
+PIDFile=/tmp/app_hello-99.pid
+User=tojoaopaulo
+Group=tojoaopaulo
+Restart=always
+KillSignal=SIGQUIT
+WorkingDirectory=/home/tojoaopaulo/tradectp/
+ExecStart=/home/tojoaopaulo/tradectp/app.js
+[Install]
+WantedBy=multi-user.target
