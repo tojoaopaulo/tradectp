@@ -7,6 +7,6 @@ Group=tojoaopaulo
 Restart=always
 KillSignal=SIGQUIT
 WorkingDirectory=/home/tojoaopaulo/tradectp/
-ExecStart=/home/tojoaopaulo/tradectp/app.js
+ExecStart=/home/tojoaopaulo/tradectp/app.js a
 [Install]
 WantedBy=multi-user.target
